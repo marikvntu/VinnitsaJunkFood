@@ -1,0 +1,27 @@
+﻿body {
+}
+
+#Caption {
+    position: relative;    
+    font-family: 'Segoe UI Light', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    font-weight: 200;
+    font-size: 38pt;
+    letter-spacing: 0.00em;
+    line-height: 1em;
+    max-height:1em;
+    left:auto; 
+    width: 100%;
+    text-align:center;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.textBlock {
+    position: relative;
+    width: 50%;
+    margin: auto;
+    text-align:justify;
+    font-family: sans-serif;
+    margin-top: 30px;
+}

@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="JunkDBModelStoreContainer" CdmEntityContainer="JunkDB">
+    <EntitySetMapping Name="tblAssortments">
+      <EntityTypeMapping TypeName="JunkDBModel.tblAssortments">
+        <MappingFragment StoreEntitySet="tblAssortments">
+          <ScalarProperty Name="nvcDescription" ColumnName="nvcDescription" />
+          <ScalarProperty Name="nvcAssortmentName" ColumnName="nvcAssortmentName" />
+          <ScalarProperty Name="iAssortmentId" ColumnName="iAssortmentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblComments">
+      <EntityTypeMapping TypeName="JunkDBModel.tblComments">
+        <MappingFragment StoreEntitySet="tblComments">
+          <ScalarProperty Name="iAssortmentId" ColumnName="iAssortmentId" />
+          <ScalarProperty Name="nvcUserName" ColumnName="nvcUserName" />
+          <ScalarProperty Name="nvcCommentText" ColumnName="nvcCommentText" />
+          <ScalarProperty Name="dtCommentDateTime" ColumnName="dtCommentDateTime" />
+          <ScalarProperty Name="iOutletId" ColumnName="iOutletId" />
+          <ScalarProperty Name="iCommentId" ColumnName="iCommentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblIngridients">
+      <EntityTypeMapping TypeName="JunkDBModel.tblIngridients">
+        <MappingFragment StoreEntitySet="tblIngridients">
+          <ScalarProperty Name="nvcDescription" ColumnName="nvcDescription" />
+          <ScalarProperty Name="iIngridientId" ColumnName="iIngridientId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblIngridientsAssortments">
+      <EntityTypeMapping TypeName="JunkDBModel.tblIngridientsAssortments">
+        <MappingFragment StoreEntitySet="tblIngridientsAssortments">
+          <ScalarProperty Name="iCount" ColumnName="iCount" />
+          <ScalarProperty Name="iIngridientId" ColumnName="iIngridientId" />
+          <ScalarProperty Name="iAssortmentId" ColumnName="iAssortmentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblOutlets">
+      <EntityTypeMapping TypeName="JunkDBModel.tblOutlets">
+        <MappingFragment StoreEntitySet="tblOutlets">
+          <ScalarProperty Name="nvcImagePath" ColumnName="nvcImagePath" />
+          <ScalarProperty Name="rRating" ColumnName="rRating" />
+          <ScalarProperty Name="nvcDescription" ColumnName="nvcDescription" />
+          <ScalarProperty Name="fLongitude" ColumnName="fLongitude" />
+          <ScalarProperty Name="fLatitude" ColumnName="fLatitude" />
+          <ScalarProperty Name="nvcOutletName" ColumnName="nvcOutletName" />
+          <ScalarProperty Name="iOutletId" ColumnName="iOutletId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tblPriceLists">
+      <EntityTypeMapping TypeName="JunkDBModel.tblPriceLists">
+        <MappingFragment StoreEntitySet="tblPriceLists">
+          <ScalarProperty Name="fPrice" ColumnName="fPrice" />
+          <ScalarProperty Name="iAssortmentId" ColumnName="iAssortmentId" />
+          <ScalarProperty Name="iOutletId" ColumnName="iOutletId" />
+          <ScalarProperty Name="iPriceId" ColumnName="iPriceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

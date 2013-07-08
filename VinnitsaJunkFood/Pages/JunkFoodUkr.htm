@@ -1,0 +1,326 @@
+﻿<!DOCTYPE HTML>
+<html ng-app>
+<head>
+      <title>Junk food in Vinnitsa</title>
+      <meta name="description" content="Кіоски швидкого харчування у Винниці. Дивитись розташування та прайс, комментувати та ставити рейтинг. Можна добавити свою точку та/або змінити прайс ліст.  ">
+      <meta name="keywords" content="Винница хот-дог, Винница хот дог, Винница шаурма, Винница гавно, Винница фастфуд, Винница поесть, фаст фуд, junk food, junkfood, street food, fast food Vinnitsya, fast food, fastfood, шаурма, хот дог, хот-дог, junkfood Vinnitsa">      
+      <meta name="google-site-verification" content="u0glysZ4a60FLn6ocAdgPgO7C28YAhDVas0WR81Q3Xg" />      
+      <link rel="stylesheet" href="../css/style.css" type="text/css">
+      <link rel="stylesheet" href="../css/metro.css" type="text/css">
+      <link rel="stylesheet" href="../css/spinnerAnimation.css" type="text/css">
+      
+      <script type="text/javascript">
+          function Initialize() {
+              //set specific language for this page
+              langId = 2;
+
+              if (navigator.userAgent.indexOf('Firefox') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Firefox') + 8)) >= 3.6) {//Firefox
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Chrome') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Chrome') + 7).split(' ')[0]) >= 15) {//Chrome
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Version') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Version') + 8).split(' ')[0]) >= 5) {//Safari
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Opera') != -1 && navigator.userAgent.indexOf('Version') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Version') + 8).split(' ')[0]) >= 12) {
+              } else {
+                  alert("This site is for the desktop broswers only. It was not tested with your browser and thus may function incorrectly. Recommended browser: Chrome");
+              }
+              GetMap();
+          }
+      </script>
+</head>
+<body class="metrouicss" onload="Initialize()" ng-controller="EntitiesCtrl">    
+    <div class="hidden">
+        Кіоски швидкого харчування у Винниці. Дивитись розташування та прайс, комментувати та ставити рейтинг. Можна добавити свою точку та/або змінити прайс ліст. 
+    </div>
+    <div id="TopBar" style="overflow: hidden;">
+        <div id="Caption">Junk food in Vinnitsa</div>                        
+        <span id="StatusBar" class="label" ></span>        
+        <div class="TopCell">
+                <button title="Ділись своїми знаннями, добавляй нові точки, змінюй прайси та добавляй НОВІ страви" onclick="EditButtonClickHandler()">
+                    <i class="icon-pencil"></i>Змінити
+                </button>
+                <br />
+                <button title="Відкривай для себе нові месця. Знаходь конкретні точки які продають нормальний хавчик та багато іншого" onclick="SearchButtonClickHandler()">
+                    <i class="icon-search" ></i>Пошук
+                </button>            
+        </div>        
+        <div class="TopCell">                                            
+                <button title="Вертає сайт в початкове положення. Закриває ліві и праві панелі. Відображає усі булавки на карті, очищає усі пошукові фильтри." id="ShowAll" ng-click="showAllButtonHandler()" >
+                    <i class="icon-eye"></i>Показати все
+                </button>
+                <br />                
+                <button title="Намагається визначити твоє розташування. Увага: Для цього треба дозволити браузеру це зробити. Не всі браузери підтримують можливості по геопизиціонуванню, браузери настольних комьютерів визначають локацію по айпі, тому розташування може бути неточним... Словом не тисни її:)" onclick="MyLocationClickHandler()">
+                    <i class="icon-location"></i>Моя локація
+                </button>            
+        </div>
+        <div id="TopLanguage">
+            <div>Сайт доступний на інших мовах:</div>
+            <br />
+            <ul>
+                <li><a href="../pages/JunkFoodEng.htm">English</a></li>
+                <li>|</li>
+                <li><a href="../pages/JunkFoodRus.htm">Русский</a></li>
+                <li>|</li>
+                <li><a href="../pages/JunkFoodUkr.htm">Українська</a></li>
+            </ul>
+        </div>                
+    </div>
+    <div id="main">
+        <div class="LeftSideBarContainer">            
+            <ul class="accordion" id="LeftAccordion" data-role="accordion">
+                <li id="EditAccordeonContainer">
+                    <a id="EditLink" onclick="OnAccordionHeaderClick(this)" >Змінити</a>
+                    <div>
+                        <button id="ModifyPricelistButton" type="button"
+                            ng-click="modifyPricelistButtonHandler()"
+                            disabled="disabled" title="Утримуй прайс актуальним, поділись своїми знаннями. Увага: Спочатку треба вибрати точку продажу" >
+                                <i class="icon-clipboard-2"></i>Змінити прайс
+                        </button>
+                        <button class="standard default" id="NewOutletButton" onclick="AddOutletClick()" title="Деяких точок немає? Розкажи іншим користувачам про місця які ти знаєш!">
+                            <i class="icon-new"></i>Нова точка
+                        </button>
+                        <button id="AddMealButton" ng-click="addMealButtonHandler()" disabled="disabled" 
+                            title="Щоб додати нову страву, почни набирати в пошуку по асортименту назву страви. Якщо його нема в базі, ця кнопка стане автивною." >
+                            <i class="icon-plus"></i>Додати страву
+                        </button>
+                        <fieldset id="NewOutletBlock" hidden="hidden">
+                            <legend>Додати нову точку:</legend>
+                            <table id="NewOutletTable">
+                                <tr>
+                                    <td class="SmallCell">*Назва точки:</td>
+                                    <td>
+                                        <input title="Обвя'зкове поле. Повинно складатись мінімум з 3-х символів" id="NewOutletName" type="text" maxlength="50" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Рейтинг якості точки:</td>
+                                    <td>
+                                        <input title="Додатково. Ти можеш вказати рейтинг якості, якщо хочеш" id="NewOutletRating" maxlength="1" type="number" step="1" min="0" max="5" /><br />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Опис точки</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3" colspan="5">
+                                        <textarea title="Додатково. Ти можеш описати це місце і вказати декілька примітних деталей, якщо хочеш." id="NewOutletDescription"></textarea></td>
+                                </tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr>
+                                    <td>Посилання на зображення:</td>
+                                    <td colspan="5">
+                                        <input maxlength="2000" id="NewOutletURL" title="Додатково. Вкажи тільки посилання на онлайн зображення. Не вказувй шлях до локальних файлів. P.S. Дуже бажанно щоб ти всеж додав зображення. Якщо хочеш це зробити потім, напиши листа." type="text" placeholder="http://..." /></td>
+                                </tr>
+                            </table> 
+                            <button class="standard default" ng-click="SaveNewOutletHandler()">
+                                <i class="icon-save"></i>Зберегти
+                            </button>
+                        </fieldset>
+                    </div>
+                </li>
+                <li id="SearchAccordeonContainer">
+                    <a id="SearchLink"  onclick="OnAccordionHeaderClick(this)">Пошук</a>
+                    <div>
+                        <h4 style="margin: 1px; padding: 1px">Торгові точки</h4>
+                        <p id="SearchOutletsParagragh" >Шукати по точкам:</p>
+                        <div class="input-control text">
+                            <input type="text" placeholder="Введи назву точки для пошуку" id="OutletSearchBox" class="SeachBox" ng-model="OutletsFilterExpression" ng-change="outletChanged()" />
+                        </div>            
+                        <div class="input-control select">
+                            <select id="OutletsBox" size="4" style="height: 15%; width: 100%;">
+                                <option ng-repeat="outlet in filteredOutlets"
+                                    value="{{outlet.EntityID}}" ng-click="onOutletClick(outlet.EntityID)">{{outlet.EntityName}}
+                                </option>
+                            </select>
+                        </div>
+            
+                        <hr />
+                        <h4 style="margin: 1px; padding: 1px">Ассортимент</h4>
+                        <p id="SearchAssortmentParagragh">Шукати в ассортименті:</p>
+                        <div class="input-control text" id="AssortmentQueryBoxContainer">
+                            <input id="AssortmtentFilterQueryBox" ng-model="AssortmentFilterExpression" type="text" ng-change="onAssortmentListChange()" placeholder="Вводь назву страви, щоб побачити точки які продають його." />
+                        </div>                        
+                        <div class="input-control select">
+                            <select id="AssortmentBox" size="10">
+                                <option ng-repeat="a in filteredMeals" ng-dblclick="onAssortmentDblClick(a.EntityName)" ng-click="onAssortmentClick(a)" title="Можеш клікнути на страву і сайт покаже, точки які її продають">
+                                    {{a.EntityName}}                                    
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a onclick="OnAccordionHeaderClick(this)">Розширенний пошук</a>
+                    <div>
+                        Поки що тут нічого нема :)
+                        <br>Натисни <a onclick="FeedbackClick()" title="Натисни сюди, щоб залишити відгук. Зауваження тільки вітаються">Зворотній звязок</a> щоб розказати що би ти хотів(ла) тут побачити. Дякую.
+                    </div>
+                </li>
+            </ul>            
+        </div>
+    </div>
+    <div id='bingMap'>
+        <div id="windows8" class="windows8">
+            <div class="wBall" id="wBall_1">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_2">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_3">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_4">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_5">
+                <div class="wInnerBall">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id='OutletRightPane'>
+        <div class="body-text">
+            <h2 id="SelectedOutlet">{{selectedOutletObject.EntityName}}</h2>
+        </div>
+        <div>
+            <img id="OutletImage" src="{{selectedOutletObject.ImageUrl}}"></img>
+        </div>
+
+        <fieldset>
+            {{selectedOutletObject.Description}}
+              <legend>Опис:
+              </legend>
+        </fieldset>
+
+        <br />
+            Рейтинг якості: {{selectedOutletObject.OutletRating.toFixed(2)}} / 5
+          <div ng-click="ratingClick()" class="rating" id="SelectedOutletRating" data-role="rating" data-param-vote="off" data-param-rating="0">
+          </div>
+        <div>Оцінили: {{selectedOutletObject.Votes}}</div>
+        <hr>
+
+        <div class="page-control" data-role="page-control">
+        <!-- Responsive controls -->
+        <span class="menu-pull"></span> 
+        <div class="menu-pull-bar"></div>
+        <ul>
+            <li class="active"><a href="#PriceFrame">Прайс</a></li>            
+            <li><a id="CommentTabLabel" href="#CommentsFrame">Коментарі()</a></li>
+        </ul>
+        <!-- Tabs content -->
+        <div class="frames">
+            <div class="frame active" id="PriceFrame">                
+                <p id="SearchPriceParagragh">Шукати в прайсі:</p>
+                <div class="input-control text">
+                    <input id="Text1" ng-model="PriceFilterExpression" type="text" placeholder="Ти можеш шукати страви в прайсі" ng-change="onPriceListChange()" />
+                </div>
+                <form id="ValidationForm">
+                    <table id="PriceTable">
+                        <tr>
+                            <th style="width: auto">Страва:</th>
+                            <th style="width: 60px;">Ціна:</th>
+                        </tr>
+                        <tr ng-repeat="a in filteredPrice = (priceList | filter:PriceFilterExpression)" onclick="PriceListRowClicked(this)" value="2">
+                            <td>{{a.EntityName}}</td>
+                            <td class="PriceColumn">{{a.Price.toFixed(2)}}</td>
+                        </tr>
+                    </table>
+
+                    <div id="PriceListModificationButtons" hidden="hidden">
+                        <button id="RemoveMealFromPrice" title="Видаляеє виділену позицію з прайсу, яку ти уже додав(а). Увага: Ти не можеш видалити позиції, які існували до тебе. Якщо Вам все-таки необхідно це зробити, попросіть адміністратора" ng-click="removeFromPriceClickHandler()">
+                            <i class="icon-remove"></i>Видалити страву з прайсу
+                        </button>
+                        <button id="AddMealFromAssortment" title="Додає в прайс страву з ассортименту. Тебе треба виділити страву, щоб активізувати цю кнопку. Підказка: Можна робити подвійний клік по страві з ассортименту, замість натиснення цієї кнопки" ng-click="addMealFromAssortmentHandler()">
+                            <i class="icon-arrow-right"></i>Додати страву с асортимента
+                        </button>
+                        <button class="standard default" title="Зберігає змінений прайс в базі данних. Ці зміни можуть бути відмінені тільки адміністратором." id="SavePriceListChanges" value="Save" ng-click="SaveClickHandler()" >
+                            <i class="icon-save"></i>Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="frame" id="CommentsFrame">
+                <div id="OuterCommentBlock" ng-controller="CommentsController">                    
+                        <button id="AddCommentButton" disabled="disabled" ng-click="AddNewCommentHandler()" >
+                            <i class="icon-comments"></i>Додати комментарій
+                        </button>
+                        <button class="standard default" title="Відправляє коментарі про цю точку" id="SubmitCommentButton" ng-click="SubmitNewCommentHandler()">
+                            <i class="icon-upload-3"></i>Відправити
+                        </button>
+                        <div id="NewCommentBlock">
+                            Нік:
+                            <br />
+                            <div class="input-control text">
+                                <input type="text" id="CommentUserName">
+                            </div>
+                            Коментарій:<br />
+                            <div class="input-control textarea">
+                                <textarea id="NewCommentText" maxlength="500"></textarea><br />
+                            </div>
+                        </div>
+
+                        <div id="CommentsBox" size="4" dir="ltr">
+                            <div ng-repeat="comment in comments" value="5">
+                                <div class="CommentEntity" ng-show="comment.CommentRating>-10">
+                                    <div id="CommentHeader">
+                                        <div style="float: left; font-weight: bold;">{{comment.UserName}}</div>
+                                        <div style="float: right">{{comment.DateTime}}</div>
+                                    </div>
+                                    <br>
+                                    <div id="CommentMessage">
+                                        {{comment.CommentText}}
+                                    </div>
+                                    <div class="CommentRating" id="CommentRating{{comment.EntityID}}">
+                                        <i class="icon-thumbs-up" ng-click="VoteCommentHandler(comment.EntityID,true)"></i>
+                                        {{comment.CommentRating}}
+                                        <i class="icon-thumbs-down" ng-click="VoteCommentHandler(comment.EntityID, false)"></i>
+                                    </div>
+                                    <br>
+                                </div>
+								<div ng-hide="comment.CommentRating>-10" >
+                                        <a onclick="OnShowMinusedCommentClick(this)"><b>Комментар замінусовано</b></a>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        
+        
+    </div>    
+    <div id="Footer">
+        <ul>
+                <li><a href="../pages/AboutUkr.html" title="Більш детальна інформація про сайт та контакти" target="_blank">Про сайт</a></li>
+                <li>|</li>
+                <li><a onclick="FeedbackClick()" title="Натисни та скажи що ти думаеш. Твоя думка дуже важлива для нас. Нє, без приколу)">Зворотній з'язок</a></li>                
+        </ul>
+    </div>    
+    <!--Defer large scripts loading to speed up page loading perceprtion -->
+
+    <!--<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+        <script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>-->
+
+    <script type="text/javascript" src="../Scripts/BingMaps.js"></script>
+    <script type="text/javascript" src="../Scripts/AngularJs.js"></script>
+    <script type="text/javascript" src="../Scripts/Jquery.js"></script>
+    <script type="text/javascript" src="../Scripts/MapOperations.js"></script>
+    <script type="text/javascript" src="../Scripts/EntitiesCtrl.js"></script>
+    <script type="text/javascript" src="../Scripts/rating.js"></script>
+    <script type="text/javascript" src="../Scripts/UiManipulations.js"></script>
+    <script type="text/javascript" src="../Scripts/pagecontrol.js"></script>
+    <script type="text/javascript" src="../Scripts/dialog.js"></script>
+    <script type="text/javascript" src="../Scripts/localization.js"></script>
+    <script type="text/javascript" src="../Scripts/PriceListHelper.js"></script>
+    <script type="text/javascript" src="../Scripts/CommentController.js"></script>
+    <script type="text/javascript" src="../Scripts/OutletHelper.js"></script>
+</body>
+</html>

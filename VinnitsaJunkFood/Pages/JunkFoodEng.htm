@@ -1,0 +1,322 @@
+﻿<!DOCTYPE HTML>
+<html ng-app>
+<head>
+      <title>Junk food in Vinnitsa</title>
+      <meta name="description" content="Киоски быстрого питания по Виннице. Смотреть расположение и прайс, комментировать и ставить рейтинг. Можно добавить свою точку и/или изменить прайс лист. ">
+      <meta name="keywords" content="Винница хот-дог, Винница хот дог, Винница шаурма, Винница гавно, Винница фастфуд, Винница поесть, фаст фуд, junk food, junkfood, street food, fast food Vinnitsya, fast food, fastfood, шаурма, хот дог, хот-дог, junkfood Vinnitsa">      
+      <meta name="google-site-verification" content="u0glysZ4a60FLn6ocAdgPgO7C28YAhDVas0WR81Q3Xg" />      
+      <link rel="stylesheet" href="../css/style.css" type="text/css">
+      <link rel="stylesheet" href="../css/metro.css" type="text/css">
+      <link rel="stylesheet" href="../css/spinnerAnimation.css" type="text/css">
+      
+      <script type="text/javascript">    
+          function Initialize() {
+              //set specific language for this page
+              langId = 0;
+
+              if (navigator.userAgent.indexOf('Firefox') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Firefox') + 8)) >= 3.6) {//Firefox
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Chrome') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Chrome') + 7).split(' ')[0]) >= 15) {//Chrome
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Version') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Version') + 8).split(' ')[0]) >= 5) {//Safari
+                  //Allow
+              } else if (navigator.userAgent.indexOf('Opera') != -1 && navigator.userAgent.indexOf('Version') != -1 && parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Version') + 8).split(' ')[0]) >= 12) {
+              } else {            
+                  alert("This site is for the desktop broswers only. It was not tested with your browser and thus may function incorrectly. Recommended browser: Chrome");
+              }
+              GetMap();              
+          }                    
+      </script>
+</head>
+<body class="metrouicss" onload="Initialize()" ng-controller="EntitiesCtrl">    
+    <div class="hidden">
+        Street food kiosks in Vinnitsa. See location, price list, comment, rate. You can add your outlet and/or modify pricelist.
+    </div>
+    <div id="TopBar" style="overflow: hidden;">
+        <div id="Caption">Junk food in Vinnitsa</div>                        
+        <span id="StatusBar" class="label" ></span>        
+        <div class="TopCell">
+                <button title="Share your knowledge by adding new outlets, modifying price list and adding NEW meals" onclick="EditButtonClickHandler()">
+                    <i class="icon-pencil"></i>Edit
+                </button>
+                <br />
+                <button title="Discover new places. Find specific outlets selling particular meal and much more." onclick="SearchButtonClickHandler()">
+                    <i class="icon-search" ></i>Search
+                </button>            
+        </div>        
+        <div class="TopCell">                            
+                <button title="Returns site to the starting point. Closes all right and left panes. Displays all pins on the map, clears all search filters." id="ShowAll" ng-click="showAllButtonHandler()" >
+                    <i class="icon-eye"></i>Show all
+                </button>
+                <br />
+                <button title="Tries to detect your location. NOTE: You must allow your browser to do it. Not all browsers support geoposition feature, desktop browsers detect your location by IP, thus your actual location might be inaccurate." onclick="MyLocationClickHandler()">
+                    <i class="icon-location"></i>My location
+                </button>            
+        </div>
+        <div id="TopLanguage">
+            <div>Site is available in other languages:</div>
+            <br />
+            <ul>
+                <li><a href="../pages/JunkFoodEng.htm">English</a></li>
+                <li>|</li>
+                <li><a href="../pages/JunkFoodRus.htm">Русский</a></li>
+                <li>|</li>
+                <li><a href="../pages/JunkFoodUkr.htm">Українська</a></li>
+            </ul>
+        </div>                
+    </div>
+    <div id="main">        
+        <div class="LeftSideBarContainer">                                    
+            <ul class="accordion" id="LeftAccordion" data-role="accordion">
+                <li id="EditAccordeonContainer">
+                    <a id="EditLink" onclick="OnAccordionHeaderClick(this)" >Edit</a>
+                    <div>
+                        <button id="ModifyPricelistButton" type="button"
+                            ng-click="modifyPricelistButtonHandler()"
+                            disabled="disabled" title="Keep the price up to date, share your knowledge. Note: You must select an outlet first" ><i class="icon-clipboard-2"></i>Modify Pricelist</button>
+                        <button class="standard default" id="NewOutletButton" onclick="AddOutletClick()" title="Some outlets missing? Let other people know about places you know!">
+                            <i class="icon-new"></i>New outlet
+                        </button>
+                        <button id="AddMealButton" ng-click="addMealButtonHandler()" disabled="disabled" 
+                            title="To add new meal, type to the assortment search box the meal name you want to add. If it is not in the base this button will be activated." >
+                            <i class="icon-plus"></i>Add new meal
+                        </button>
+                        <fieldset id="NewOutletBlock" hidden="hidden">
+                            <legend>Add new outlet:</legend>
+                            <table id="NewOutletTable">
+                                <tr>
+                                    <td class="SmallCell">*Outlet name:</td>
+                                    <td>
+                                        <input title="Required field. Should be at least 3 characters." id="NewOutletName" type="text" maxlength="50" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Outlet quality rating:</td>
+                                    <td>
+                                        <input title="Optional. You can specify the quality rating, if you want." id="NewOutletRating" maxlength="1" type="number" step="1" min="0" max="5" /><br />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Outlet description:</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3" colspan="4">
+                                        <textarea title="Optional. You can specify general description of this palce and some remarkable details, if you want." id="NewOutletDescription"></textarea></td>
+                                </tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr>
+                                    <td>Image URL:</td>
+                                    <td colspan="3">
+                                        <input maxlength="2000" id="NewOutletURL" title="Optional. Specify only online(uploaded) image urls. Do not specify local file locations. P.S. It's cool to have it." type="text" placeholder="http://..." /></td>
+                                </tr>
+                            </table> 
+                            <button class="standard default" ng-click="SaveNewOutletHandler()">
+                                <i class="icon-save"></i>Save new outlet
+                            </button>
+                        </fieldset>
+                    </div>
+                </li>
+                <li id="SearchAccordeonContainer">
+                    <a id="SearchLink"  onclick="OnAccordionHeaderClick(this)">Search</a>
+                    <div>
+                        <h4 style="margin: 1px; padding: 1px">Assortment</h4>
+                        <p id="SearchOutletsParagragh">Search in outlets:</p>
+                        <div class="input-control text">
+                            <input type="text" placeholder="Type to search through outlets" id="OutletSearchBox" class="SeachBox" ng-model="OutletsFilterExpression" ng-change="outletChanged()" />
+                        </div>            
+                        <div class="input-control select">
+                            <select id="OutletsBox" size="4" style="height: 15%; width: 100%;">
+                                <option ng-repeat="outlet in filteredOutlets"
+                                    value="{{outlet.EntityID}}" ng-click="onOutletClick(outlet.EntityID)">{{outlet.EntityName}}
+                                </option>
+                            </select>
+                        </div>
+            
+                        <hr />
+                        <h4 style="margin: 1px; padding: 1px">Assortment</h4>
+                        <p id="SearchAssortmentParagragh">Search in assortment:</p>
+                        <div class="input-control text" id="AssortmentQueryBoxContainer">
+                            <input id="AssortmtentFilterQueryBox" ng-model="AssortmentFilterExpression" type="text" ng-change="onAssortmentListChange()" placeholder="Type meal name to find places selling it." />
+                        </div>                        
+                        <div class="input-control select">
+                            <select id="AssortmentBox" size="10">
+                                <option ng-repeat="a in filteredMeals" ng-dblclick="onAssortmentDblClick(a.EntityName)" ng-click="onAssortmentClick(a)">{{a.EntityName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a onclick="OnAccordionHeaderClick(this)">Advanced Search </a>
+                    <div>
+                        Nothing here by far :)
+                        <br>Click <a onclick="FeedbackClick()" title="Click to let me know what you think. Remarks, are highly appreciated.">Feedback</a> to let me know what you'd like to see here. Cheers.
+                    </div>
+                </li>
+            </ul>            
+        </div>
+    </div>
+    <div id='bingMap'>
+        <div id="windows8" class="windows8">
+            <div class="wBall" id="wBall_1">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_2">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_3">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_4">
+                <div class="wInnerBall">
+                </div>
+            </div>
+            <div class="wBall" id="wBall_5">
+                <div class="wInnerBall">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id='OutletRightPane'>              
+        <div class="body-text">
+            <h2 id="SelectedOutlet">{{selectedOutletObject.EntityName}}</h2>
+        </div>
+        <div>
+            <img id="OutletImage" src="{{selectedOutletObject.ImageUrl}}"></img>
+        </div>
+
+        <fieldset>
+            {{selectedOutletObject.Description}}
+              <legend>Description:
+              </legend>
+        </fieldset>
+
+        <br />
+        Rating of quality: {{selectedOutletObject.OutletRating.toFixed(2)}} / 5
+          <div ng-click="ratingClick()" class="rating" id="SelectedOutletRating" data-role="rating" data-param-vote="off" data-param-rating="0">
+          </div>
+        <div>Votes: {{selectedOutletObject.Votes}}</div>
+        <hr>
+
+        <div class="page-control" data-role="page-control">
+        <!-- Responsive controls -->
+        <span class="menu-pull"></span> 
+        <div class="menu-pull-bar"></div>
+        <ul>
+            <li class="active"><a href="#PriceFrame">Price list</a></li>            
+            <li><a id="CommentTabLabel" href="#CommentsFrame">Comments()</a></li>
+        </ul>
+        <!-- Tabs content -->
+        <div class="frames">
+            <div class="frame active" id="PriceFrame">                
+                <p id="SearchPriceParagragh">Search in price list:</p>
+                <div class="input-control text">
+                    <input id="Text1" ng-model="PriceFilterExpression" type="text" placeholder="You can search the meal in the price list" ng-change="onPriceListChange()" />
+                </div>
+                <form id="ValidationForm">
+                    <table id="PriceTable">
+                        <tr>
+                            <th style="width: auto">Meal:</th>
+                            <th style="width: 60px;">Price:</th>
+                        </tr>
+                        <tr ng-repeat="a in filteredPrice = (priceList | filter:PriceFilterExpression)" onclick="PriceListRowClicked(this)" value="2">
+                            <td>{{a.EntityName}}</td>
+                            <td class="PriceColumn">{{a.Price.toFixed(2)}}</td>
+                        </tr>
+                    </table>
+
+                    <div id="PriceListModificationButtons" hidden="hidden">
+                        <button id="RemoveMealFromPrice" title="Removes selected price list row that you have already added. Note: You cannot delete rows that were created before you. If you need so, please contact administrator" ng-click="removeFromPriceClickHandler()">
+                            <i class="icon-remove"></i>Remove meal from price
+                        </button>
+                        <button id="AddMealFromAssortment" title="Adds meal to the price list from the assortment. You must select a meal to enable this button. Tip: You can also double click the assortment instead of pressing this button." ng-click="addMealFromAssortmentHandler()">
+                            <i class="icon-arrow-right"></i>Add meal from assortment
+                        </button>
+                        <button class="standard default" title="Saves the modified price list in the database. These changes can be undone only by administrator." id="SavePriceListChanges" value="Save" ng-click="SaveClickHandler()" >
+                            <i class="icon-save"></i>Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="frame" id="CommentsFrame">
+                <div id="OuterCommentBlock" ng-controller="CommentsController">                    
+                        <button id="AddCommentButton" disabled="disabled" ng-click="AddNewCommentHandler()" >
+                            <i class="icon-comments"></i>Add Comment
+                        </button>
+                        <button class="standard default" title="Sends your comment regarding the outlet you selected." id="SubmitCommentButton" ng-click="SubmitNewCommentHandler()">
+                            <i class="icon-upload-3"></i>Send
+                        </button>
+                        <div id="NewCommentBlock">
+                            Nickname:
+                            <br />
+                            <div class="input-control text">
+                                <input type="text" id="CommentUserName">
+                            </div>
+                            Comment:<br />
+                            <div class="input-control textarea">
+                                <textarea id="NewCommentText" maxlength="500"></textarea><br />
+                            </div>
+                        </div>
+
+                        <div id="CommentsBox" size="4" dir="ltr">
+                            <div ng-repeat="comment in comments" value="5">
+                                <div class="CommentEntity" ng-show="comment.CommentRating>-10">
+                                    <div id="CommentHeader">
+                                        <div style="float: left; font-weight: bold;">{{comment.UserName}}</div>
+                                        <div style="float: right">{{comment.DateTime}}</div>
+                                    </div>
+                                    <br>
+                                    <div id="CommentMessage">
+                                        {{comment.CommentText}}
+                                    </div>
+									<div class="CommentRating" id="CommentRating{{comment.EntityID}}">
+                                        <i class="icon-thumbs-up" ng-click="VoteCommentHandler(comment.EntityID,true)"></i>
+                                        {{comment.CommentRating}}
+                                        <i class="icon-thumbs-down" ng-click="VoteCommentHandler(comment.EntityID, false)"></i>
+                                    </div>
+                                    <br>
+                                </div>
+								<div ng-hide="comment.CommentRating>-10" >
+                                        <a onclick="OnShowMinusedCommentClick(this)"><b>Low rated comment</b></a>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        </div>        
+        
+    </div>    
+    <div id="Footer">
+        <ul>
+                <li><a href="../pages/AboutEng.html" title="More detailed infomation about the site itself and my contacts" target="_blank">About</a></li>
+                <li>|</li>
+                <li><a onclick="FeedbackClick()" title="Click to let me know what you think. Remarks, are highly appreciated.">Feedback</a></li>                
+        </ul>
+    </div>    
+    <!--Defer large scripts loading to speed up page loading perceprtion -->
+
+    <!--<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+        <script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>-->
+
+    <script type="text/javascript" src="../Scripts/BingMaps.js"></script>
+    <script type="text/javascript" src="../Scripts/AngularJs.js"></script>
+    <script type="text/javascript" src="../Scripts/Jquery.js"></script>
+    <script type="text/javascript" src="../Scripts/MapOperations.js"></script>
+    <script type="text/javascript" src="../Scripts/EntitiesCtrl.js"></script>
+    <script type="text/javascript" src="../Scripts/rating.js"></script>
+    <script type="text/javascript" src="../Scripts/UiManipulations.js"></script>
+    <script type="text/javascript" src="../Scripts/pagecontrol.js"></script>
+    <script type="text/javascript" src="../Scripts/dialog.js"></script>
+    <script type="text/javascript" src="../Scripts/localization.js"></script>
+	<script type="text/javascript" src="../Scripts/PriceListHelper.js"></script>
+    <script type="text/javascript" src="../Scripts/CommentController.js"></script>
+    <script type="text/javascript" src="../Scripts/OutletHelper.js"></script>
+</body>
+</html>

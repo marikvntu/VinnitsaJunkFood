@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2007/06/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="93f45b1b9b2f45a6a9d43fe2be834427" Name="Diagram1">
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblAssortments" Width="1.5" PointX="10.140912204115146" PointY="12.504285713892562" />
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblComments" Width="1.5" PointX="9.2589033475419988" PointY="2.8988082720426882" />
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblIngridients" Width="1.5" PointX="7.8177875912831105" PointY="10.703200345255063" />
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblIngridientsAssortments" Width="1.5" PointX="5.40174496052868" PointY="13.173571637446793" />
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblOutlets" Width="1.5" PointX="5.7240114350449343" PointY="7.1878878060671907" />
+        <EntityTypeShape EntityType="VinnitsaModelNamespace.tblPriceLists" Width="1.5" PointX="9.0103634563322927" PointY="7.7016502356630054" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblComments_tblAssortments" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblIngridientsAssortment_tblAssortment" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblPriceList_tblAssortment" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblComments_tblOutlets" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblIngridientsAssortment_tblIngridients" />
+        <AssociationConnector Association="VinnitsaModelNamespace.FK_tblPriceList_tblOutlets" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

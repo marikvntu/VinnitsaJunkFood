@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{950E2436-B22B-4243-804E-46B7B2CFD124}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VinnitsaJunkFood</RootNamespace>
+    <AssemblyName>VinnitsaJunkFood</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PublishDatabaseSettings>&lt;Objects xmlns="http://schemas.microsoft.com/developer/msbuild/2003"&gt;&lt;ObjectGroup Name="VinnitsaEntities-Deployment" Order="1"&gt;&lt;Destination Path="Data Source=.\SQLEXPRESS%3bInitial Catalog=JunkDB%3bIntegrated Security=True" /&gt;&lt;Object Type="DbFullSql"&gt;&lt;PreSource Path="\&amp;quot%3bdata source=.\\SQLEXPRESS%3binitial catalog=JunkDB%3bintegrated security=True%3bMultipleActiveResultSets=True%3bApp=EntityFramework\&amp;quot%3b" ScriptSchema="False" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" /&gt;&lt;Source Path="obj\Debug\AutoScripts\VinnitsaEntities-Deployment_DataOnly.sql" Transacted="True" /&gt;&lt;/Object&gt;&lt;/ObjectGroup&gt;&lt;ObjectGroup Name="NewConnection1-Deployment" Order="2" Enabled="False" xmlns=""&gt;&lt;Destination Path="" /&gt;&lt;/ObjectGroup&gt;&lt;/Objects&gt;</PublishDatabaseSettings>
+    <PrecompileBeforePublish>true</PrecompileBeforePublish>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="css\about.css" />
+    <Content Include="css\spinnerAnimation.css" />
+    <Content Include="fonts\iconFont.svg" />
+    <Content Include="fonts\license.txt" />
+    <Content Include="icons\chrome.png" />
+    <Content Include="icons\small-blue-pushpin.png" />
+    <Content Include="icons\small-orange-pushpin.png" />
+    <Content Include="icons\small-red-new-pushpin.png" />
+    <Content Include="icons\small-red-pushpin.png" />
+    <Content Include="Pages\AboutEng.html" />
+    <Content Include="Pages\AboutRus.html" />
+    <Content Include="Pages\AboutUkr.html" />
+    <Content Include="Pages\JunkFoodRus.htm" />
+    <Content Include="Pages\JunkFoodUkr.htm" />
+    <Content Include="RequestHandlers\FeedbackHandler.aspx" />
+    <Content Include="RequestHandlers\PutRequestHandler.aspx" />
+    <Content Include="css\metro.css" />
+    <Content Include="css\style.css" />
+    <Content Include="Pages\JunkFoodEng.htm" />
+    <Content Include="RequestHandlers\GetRequestHandler.aspx" />
+    <Content Include="Scripts\AngularJs.js" />
+    <Content Include="Scripts\BingMaps.js" />
+    <Content Include="Scripts\CommentController.js" />
+    <Content Include="Scripts\OutletHelper.js" />
+    <Content Include="Scripts\PriceListHelper.js" />
+    <Content Include="Scripts\dialog.js" />
+    <Content Include="Scripts\EntitiesCtrl.js" />
+    <Content Include="Scripts\Jquery.js" />
+    <Content Include="Scripts\localization.js" />
+    <Content Include="Scripts\MapOperations.js" />
+    <Content Include="Scripts\pagecontrol.js" />
+    <Content Include="Scripts\rating.js" />
+    <Content Include="Scripts\UiManipulations.js" />
+    <Content Include="RequestHandlers\ServicePage.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessLayer\RequestHelper.cs" />
+    <Compile Include="BusinessLayer\ResponseBuilder.cs" />
+    <Compile Include="BusinessLayer\SiteManager.cs" />
+    <Compile Include="BusinessLayer\SubmitHelper.cs" />
+    <Compile Include="Logger\FileLogger.cs" />
+    <Compile Include="RequestHandlers\FeedbackHandler.aspx.cs">
+      <DependentUpon>FeedbackHandler.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RequestHandlers\FeedbackHandler.aspx.designer.cs">
+      <DependentUpon>FeedbackHandler.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RequestHandlers\PutRequestHandler.aspx.cs">
+      <DependentUpon>PutRequestHandler.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RequestHandlers\PutRequestHandler.aspx.designer.cs">
+      <DependentUpon>PutRequestHandler.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccessLayer\ConnectionHelper.cs" />
+    <Compile Include="DataAccessLayer\DbReadHelper.cs" />
+    <Compile Include="DataAccessLayer\DbSubmitHelper.cs" />
+    <Compile Include="DataAccessLayer\VinnitsaDBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VinnitsaDBModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\AssortmentEntity.cs" />
+    <Compile Include="Entities\BaseEntity.cs" />
+    <Compile Include="Entities\CommentEntity.cs" />
+    <Compile Include="Entities\GeoLocationEntity.cs" />
+    <Compile Include="Entities\IngridientEntity.cs" />
+    <Compile Include="Entities\ItemPriceWrapper.cs" />
+    <Compile Include="Entities\OutletEntity.cs" />
+    <Compile Include="Entities\PriceListEntity.cs" />
+    <Compile Include="Entities\ResponseWrapperEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestHandlers\GetRequestHandler.aspx.cs">
+      <DependentUpon>GetRequestHandler.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RequestHandlers\GetRequestHandler.aspx.designer.cs">
+      <DependentUpon>GetRequestHandler.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RequestHandlers\ServicePage.aspx.cs">
+      <DependentUpon>ServicePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RequestHandlers\ServicePage.aspx.designer.cs">
+      <DependentUpon>ServicePage.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <EntityDeploy Include="DataAccessLayer\VinnitsaDBModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>VinnitsaDBModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="DataAccessLayer\VinnitsaDBModel.edmx.diagram">
+      <DependentUpon>VinnitsaDBModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="fonts\iconFont.eot" />
+    <Content Include="fonts\iconFont.ttf" />
+    <Content Include="fonts\iconFont.woff" />
+    <Content Include="SiteManager.log" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,323 @@
+﻿
+html,body { 
+    height: 100%;     
+    margin: 0px; 
+    padding: 0px; 
+    overflow-y:auto;
+    overflow-x: auto;    
+}
+
+#main {
+    position: relative;
+    width: 30%;
+    height: 80%;
+    float: left;    
+    border-right: solid 2px black;    
+    overflow-y:auto;        
+    overflow-x: auto;
+    display: none;
+}
+
+#TopBar {
+    display:block;
+    padding-top: 20px;
+    position:relative;
+    width: 100%;
+    min-height: 100px;    
+    border-bottom: solid 2px black;              
+    overflow:auto;  
+    float:left;  
+    min-width:780px;
+    height:15%;
+}
+
+#Footer {
+    position:relative;
+    width: 100%;         
+    min-height:10px;    
+    height:5%;
+    float: left; 
+    border-top: solid 2px black; 
+    text-align: center;         
+    min-width:780px;
+}
+
+#OutletRightPane {
+   position:relative; 
+   width:20%;
+   height:80%; 
+   float: right;   
+   border-left: solid 2px black; 
+   padding-left: 10px;   
+   padding-right: 5px; 
+   overflow-y:auto;  
+   display: none;
+}
+
+#bingMap {
+   position:relative;    
+   margin:auto;
+   height: 80%;
+   width: 100%;      
+   float: left;      
+}
+
+.CommentEntity {
+    border: 1px solid #000000;
+    background-color: #ededed;
+    min-height: 50px;  
+    word-wrap:break-word;  
+    /*margin-right: 5px;*/
+}
+
+#CommentMessage {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+}
+
+#CommentUserName, #NewCommentText {
+    width: 100%;
+    margin : 0;
+    padding : 0;
+}
+
+#CommentHeader {
+    background-color:#ededed;
+    margin-left: 5px;    
+    margin-right: 5px;
+}
+
+#NewCommentBlock {
+    display:none;    
+}
+
+#NewCommentText {     
+    height:70px;
+    padding-left: 5px;
+}
+
+.LeftSideBarContainer {
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+#PriceTable{
+height: 100px;
+overflow-y: auto; 
+table-layout: fixed;
+}
+
+#NewOutletName {
+    width:100%;
+    margin: 5px,5px,5px,5px;
+    min-width: 70px;
+}
+
+#NewOutletDescription {
+    width:100%; 
+    height:100%;
+    min-height : 100px;
+}
+
+#AssortmentBox {
+    height: 15%;
+    width: 100%;
+}
+
+#LatitudeCell, #LongitudeCell {
+    width:auto;
+}
+
+#NewOutletTable, #NewOutletBlock {
+    margin-right: 10px;    
+}
+
+#OutletImage {
+    display : none;    
+    max-height : 250px;
+    max-width : 100%;
+}
+
+#NewOutletURL {
+    width : 100%;
+}
+
+#SubmitCommentButton {
+    display: none;
+}
+
+#BottomTable {
+    position:absolute; bottom:0;    
+    width:90%; 
+    float:right; 
+    display: none;      
+}
+
+#chromeIcon {
+    height:50px;
+    width: 50px;
+}
+
+.PriceCell {                        
+    max-width: 45px;    
+    margin-right: 5px;
+    margin-left: 0px;
+    padding-left: 5px;
+}
+
+.MealNameHeader {  
+    width : auto;      
+}
+
+#FeedbackContainer {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    margin-right: 10px;
+    display: none;
+}
+
+.TopCell {     
+    float:left;   
+    display: inline-block;
+    margin-right:20px;    
+}
+
+#TopInfo { 
+    width:20%;
+    max-width: 400px;    
+    text-align:justify;
+    text-justify:inter-word;
+    line-height:20px;
+    margin-top:-10px;    
+    line-height: 1em;
+    max-height:5em;
+    text-overflow:ellipsis;
+    overflow: hidden;    
+    white-space:normal;
+    letter-spacing: 0.00em;
+}
+
+#Caption {
+    position: relative;
+    float: left;
+    width:30%;
+    min-width: 200px;
+    font-family: 'Segoe UI Light', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    font-weight: 200;
+    font-size: 38pt;
+    letter-spacing: 0.00em;
+    line-height: 1em;
+    max-height:1em;
+    margin-top : 0px;
+    padding-left: 20px;    
+    margin-right: 5px;        
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#TopLanguage {
+    display: inline-block;
+    float: right;
+    margin-right: 10px;
+}
+
+#TopLanguage > ul  {
+    list-style-type: none;    
+    float: right;
+}
+
+#Footer > ul {
+    list-style-type: none;            
+    position: relative;
+    width:200px;
+    margin: auto;
+}
+
+#TopLanguage > ul li, #Footer > ul li {
+    display: inline;
+}
+
+#TopBar fieldset {
+    margin-top:10px;
+}
+
+#StatusBar {
+    position:absolute;
+    vertical-align:bottom;    
+    display:none;
+    left:20px;
+    bottom: 10px;
+}
+
+#PriceTable td {
+    word-wrap:break-word;
+}
+
+.infobox {
+    position:absolute;
+    bottom : 50px;
+    background-color: white;
+    border: solid 1px;
+    padding: 5px;    
+    min-width: 150px; 
+    max-width:250px;
+}
+
+.infoboxIcon {
+    width: 200px;
+    height: 150px;
+}
+
+#infoboxDescription {
+    margin-bottom: 5px;
+}
+
+.feedbackText {
+    position: relative;
+    float:right;
+    margin-right: 10px;
+    padding-bottom: 10px;
+    min-width: 300px;
+}
+
+.feedbackDiv {
+    min-height: 200px;
+}
+
+.feedbackDiv > textarea {
+    min-height: 130px;
+    resize: none;
+}
+
+.hidden {
+    display:none;
+}
+
+#TopBar button {
+    width:135px;
+}
+
+#SearchOutletsParagragh, #SearchAssortmentParagragh, #SearchPriceParagragh {
+    margin:1px;
+    padding:1px;
+    font-size: 9pt;
+}
+
+.icon-thumbs-down:hover, .icon-thumbs-up:hover {
+    color: darkgray;
+    cursor:pointer;
+}
+
+.icon-thumbs-down, .icon-thumbs-up {
+    color: lightgray;
+}
+
+.CommentRating {
+    float: right;    
+    margin-right: 5px;
+}
+
+#PriceFrame, 
