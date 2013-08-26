@@ -5,6 +5,7 @@ using JunkBackEnd.Entities;
 using JunkBackEnd.DataAccessLayer;
 using System.Globalization;
 using VinnitsaJunkFood.Logger;
+using VinnitsaJunkFood.BusinessLayer;
 
 namespace JunkBackEnd.BusinessLayer{
     public class SiteManager{
@@ -134,14 +135,13 @@ namespace JunkBackEnd.BusinessLayer{
 
         private string submitMeal(string mealJson, string description = null) {
             string submitStatus;
-            if (String.IsNullOrWhiteSpace(mealJson)) { return "Failed: Blank json"; }
+            AssortmentEntity meal;
 
-            AssortmentEntity meal = RequestHelper.DeserializeJson<AssortmentEntity>(mealJson);
-            bool isUnique = SubmitHelper.isUniqueMeal(meal.EntityName, ref _assortmentList);
-            //check if unique name
-            if (!isUnique) { return "Failed: There is already a meal with name: " + meal.EntityName; }
+            bool success = InputHelper.ValidateAndPrepareMealData(mealJson, ref _assortmentList,out submitStatus, out meal);
+            if (!success) { return submitStatus; }
 
-            if (!SubmitHelper.SubmitMeal(ref meal, out submitStatus)) { return submitStatus; };
+            success = SubmitHelper.SubmitMeal(ref meal, out submitStatus);
+            if (!success) { return submitStatus; };
 
             //add to assortment list, in successful scenario
             _assortmentList.Add(meal);
@@ -156,7 +156,7 @@ namespace JunkBackEnd.BusinessLayer{
         /// <param name="outletID">EntityID of outlet</param>
         /// <param name="priceListParams">Request string from webform containing MealName/price pairs</param>
         /// <returns>status string of the current operation</returns>
-        public string SubmitPriceList(int outletID, string priceListParams){
+        public string SubmitPriceList(string outletID, string priceListParams){
             lock (_lockObj){
                 string submitStatus = submitPriceList(outletID, priceListParams);
 
@@ -165,23 +165,31 @@ namespace JunkBackEnd.BusinessLayer{
             }
         }
 
-        private string submitPriceList(int outletID, string priceListParams){
+        private string submitPriceList(string outletIdString, string priceListParams){
+            int outletId;
+            string submitStatus;
+            List<PriceListEntity> requestPriceList;
+
+            bool success = InputHelper.ValidateAndPreparePriceListData(outletIdString, 
+                                                                        priceListParams, 
+                                                                        out submitStatus,
+                                                                        out requestPriceList,
+                                                                        out outletId);
+
+            if (!success) { return submitStatus; }
+
             //check if OutletID exists;
-            OutletEntity currentOutlet = findOutletById(outletID);
+            OutletEntity currentOutlet = findOutletById(outletId);
 
-            if (currentOutlet == null) {return "Failed: Could not find outlet with ID: " + outletID.ToString(); };
+            if (currentOutlet == null) { return "Failed: Could not find outlet with ID: " + outletIdString.ToString(); };
 
-            List<PriceListEntity> requestPriceList = RequestHelper.UnwrapPriceListString(priceListParams);
-            if (requestPriceList == null) {return "Failed: Could not unparse price list params: " + priceListParams;}
-
-            //submit new price list
-            string submtStatus;
-            bool successfulSubmit = SubmitHelper.SubmitPriceList(ref currentOutlet,
+            //submit new price list            
+            success = SubmitHelper.SubmitPriceList(ref currentOutlet,
                                                 requestPriceList,
                                                 ref _assortmentList,
-                                                out submtStatus);
+                                                out submitStatus);
 
-            if (!successfulSubmit){return submtStatus;}
+            if (!success){return submitStatus;}
 
             //overwrite price list for the given outlet
             currentOutlet.AssortmentPriceList = requestPriceList.
@@ -279,23 +287,33 @@ namespace JunkBackEnd.BusinessLayer{
                 { list.Add(comment); }
         }
 
-        public string RateOutlet(int outletID, int newRating){
-            OutletEntity outlet = findOutletById(outletID);
-
+        public string RateOutlet(string outletIdString, string newRatingString){
+            int outletId, newRating;
             string operationStatus;
+
+            bool success = InputHelper.ValidateAndPrepareRatingData(outletIdString, newRatingString, out operationStatus, out outletId, out newRating);
+
+            if (!success) {
+                _logger.WriteLog(operationStatus);
+                return operationStatus; 
+            }
+
+            OutletEntity outlet = findOutletById(outletId);
+            
             double newAverageRating;
             int newVoteCount;
-
-            if (!SubmitHelper.RateOutlet(outlet, newRating, out operationStatus, out newAverageRating, out newVoteCount)){
+            
+            success = SubmitHelper.RateOutlet(outlet, newRating, out operationStatus, out newAverageRating, out newVoteCount);
+            if (!success){
                 _logger.WriteLog(operationStatus);
                 return operationStatus;
-            };           
+            };
 
             //update existing in-memory data
             outlet.OutletRating = newAverageRating;
             outlet.Votes = newVoteCount;
 
-            _logger.WriteLog("Outlet with Id - " + outletID.ToString()+ " was voted with rating :" + newRating.ToString() + " resulting in new rating: " + newAverageRating.ToString());
+            _logger.WriteLog("Outlet with Id - " + outletId.ToString() + " was voted with rating :" + newRating.ToString() + " resulting in new rating: " + newAverageRating.ToString());
 
             refreshJsonStringCache();
             return ResponseBuilder.ReturnJsonFromEntitity(outlet);
@@ -342,7 +360,7 @@ namespace JunkBackEnd.BusinessLayer{
             return _outletsList
                    .Where(outlet => outlet.EntityID == outletID)
                    .FirstOrDefault();
-        }        
+        }
 
         /// <summary>
         /// Performs sorting of outlet entities by name and meal entity by name

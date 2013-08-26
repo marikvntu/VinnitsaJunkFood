@@ -18,13 +18,8 @@
                 break;
 
             case "UpdatePriceList":
-                if (Request.QueryString.Count != 2) { Response.Write("Wrong url param key number"); return; }        
-                if (!int.TryParse(Request["OutletID"], out outletID)){
-                        Response.Write("Failed: Could not convert " + Request["OutletID"] + " into an outletID");
-                        return;
-                }
-                string priceListParams;
-                
+                if (Request.QueryString.Count != 2) { Response.Write("Wrong url param key number"); return; }                
+                string priceListParams;                
                 if (Request.Form.Count == 1){
                     priceListParams = Request.Form[0];
                 }
@@ -32,8 +27,8 @@
                     Response.Write("Failed: Price list is empty");
                     return;
                 }
-                
-                opStatus = JunkBackEnd.BusinessLayer.SiteManager.Instance.SubmitPriceList(outletID, priceListParams);
+
+                opStatus = JunkBackEnd.BusinessLayer.SiteManager.Instance.SubmitPriceList(Request["OutletID"], priceListParams);
                 Response.Write(opStatus);                
                 break;
 
@@ -88,7 +83,7 @@
                 if (Request.QueryString.Count != 3) { Response.Write("Wrong url param key number"); return; }
                 string outletIdString = Request["OutletID"];
                 
-                if (!int.TryParse(outletIdString, out outletID)) {
+                /*if (!int.TryParse(outletIdString, out outletID)) {
                     Response.Write("Failed: Could not convert " + Request["OutletID"] + " into an outletID");
                         return;
                 }                
@@ -97,16 +92,16 @@
                 if (!int.TryParse(Request["Rating"], out newRating)){
                     Response.Write("Failed: Could not convert " + Request.QueryString[2] + " into a new rating");
                     return;
-                }
+                }*/
 
                 if (Session[outletIdString] == "Voted"){
                     Response.Write("Failed: You already voted for this outlet");
                     return;
                 }
 
-                Session.Add(outletIdString, "Voted");                
-                    
-                opStatus = JunkBackEnd.BusinessLayer.SiteManager.Instance.RateOutlet(outletID, newRating);
+                Session.Add(outletIdString, "Voted");
+
+                opStatus = JunkBackEnd.BusinessLayer.SiteManager.Instance.RateOutlet(outletIdString, Request["Rating"]);
                 Response.Write(opStatus);
                  
                 break;   
