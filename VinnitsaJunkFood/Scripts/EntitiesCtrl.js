@@ -1,37 +1,35 @@
 ﻿function EntitiesCtrl($scope, $http, $timeout) {
     $scope.getUrlHeader = '../RequestHandlers/GetRequestHandler.aspx?RequestAction=';
     $scope.putUrlHeader = '../RequestHandlers/PutRequestHandler.aspx?RequestAction=';
-    $scope.url = $scope.getUrlHeader + 'Initialize&timestamp=' + Date.now();
+    $scope.urlHeader = "../JunkService.svc/";
+    $scope.url;// = $scope.getUrlHeader + 'Initialize&timestamp=' + Date.now();
     $scope.outlets = [];
     $scope.filteredOutlets = [];
-    $scope.assortment = [];    
+    $scope.assortment = [];
     $scope.priceList = [];
     $scope.backupAssortment = [];
     $scope.currentOutlet = -1;
-    $scope.selectedOutletObject = null;    
+    $scope.selectedOutletObject = null;
 
-    $scope.onEntitySubmit = function (entity, action) {
-        $scope.url = $scope.putUrlHeader + action + '&' + JSON.stringify(entity, null, 2);
-        $http.post($scope.url)
-             .success($scope.hadleEntityUploaded);             
-    }
+    var outletRatingNode = $('#SelectedOutletRating');    
 
-    $scope.hadleEntityUploaded = function (data, status) {
-        if (status != 200) { return;}        
+    $scope.hadleEntityUploaded = function (data) {
         DisplayStatusChange(data);
         $timeout($scope.fetch, 150);
-    }   
+    }
 
     $scope.addMealButtonHandler = function () {
         var mealName = $('#AssortmtentFilterQueryBox').val();
         //TODO: make possible to write description
         var description = "";
         var meal = {
+            EntityID: 0,
             EntityName: mealName,
-            MealDescription: description,
-            EntityID: 0
-        };
-        $scope.onEntitySubmit(meal, 'AddAssortmentEntity');
+            MealDescription: description
+        };        
+        
+        var url = $scope.urlHeader + "SubmitMeal";
+        AjaxPost(url, meal, $scope.hadleEntityUploaded);
     }
 
     $scope.onAssortmentListChange = function () {
@@ -47,16 +45,16 @@
             return;
         }
 
-        ButtonEnabler("AddMealButton", $('#AssortmentBox option').length == 0);        
+        ButtonEnabler("AddMealButton", $('#AssortmentBox option').length == 0);
     }
 
-    $scope.onOutletClick = function (id) {        
+    $scope.onOutletClick = function (id) {
         $scope.currentOutlet = id;
         $scope.assortment = $scope.backupAssortment;
-        $scope.filteredMeals = $scope.backupAssortment;        
+        $scope.filteredMeals = $scope.backupAssortment;
         $scope.selectedOutletObject = null;
-        $scope.priceListReadOnly = true;       
-        
+        $scope.priceListReadOnly = true;
+
         //fire event to the comment controller
         $scope.$broadcast('getCommentsEvent', id);
 
@@ -68,9 +66,9 @@
 
             var location = new Microsoft.Maps.Location(v.Latitude, v.Longitude);
             CenterMap(location);
-            PaintSelectedPushpin(v.Latitude, v.Longitude);                                   
-            $scope.selectedOutletObject = v;           
-            
+            PaintSelectedPushpin(v.Latitude, v.Longitude);
+            $scope.selectedOutletObject = v;
+
             //Each outlet has its own price list to be populated
             $scope.priceList = [];
 
@@ -94,7 +92,7 @@
     }
 
     $scope.pinClicked = function (e) {
-        if (e.targetType != 'pushpin') { return; }       
+        if (e.targetType != 'pushpin') { return; }
 
         var pinLoc = e.target.getLocation();
         //hide it to prevent errors in re-painting
@@ -103,34 +101,32 @@
 
         //find coordinates and center map on it
         $.each($scope.outlets, function (k, v) {
-                if (v.Latitude == pinLoc.latitude &&
-                  v.Longitude == pinLoc.longitude) {
-                    $scope.onOutletClick(v.EntityID);
+            if (v.Latitude == pinLoc.latitude &&
+              v.Longitude == pinLoc.longitude) {
+                $scope.onOutletClick(v.EntityID);
 
-                    //select listbox item that corresponds pushpin
-                    $("#OutletsBox :contains(" + v.EntityName + ")").attr('selected', true);
-                }
+                //select listbox item that corresponds pushpin
+                $("#OutletsBox :contains(" + v.EntityName + ")").attr('selected', true);
+            }
         });
     }
 
-    $scope.addPushpin = function (index, value) {        
+    $scope.addPushpin = function (index, value) {
         var pushpin = AddPushpinWoHandler(value.Latitude, value.Longitude, standardPushpinOptions, value);
         //Add click evnt handler on pushpin
-        Microsoft.Maps.Events.addHandler(pushpin, 'click', $scope.pinClicked);        
+        Microsoft.Maps.Events.addHandler(pushpin, 'click', $scope.pinClicked);
     }
 
-    $scope.handleEntitiesLoaded = function (data, status) {
-        if (status == 200) {            
-            $scope.outlets = data.OutletList;            
+    $scope.handleEntitiesLoaded = function (data) {
+            //var data = JSON.parse(response.Data);
+            $scope.outlets = data.OutletList;
             $scope.assortment = data.AssortmentList;
-            $scope.backupAssortment = data.AssortmentList;
+            $scope.backupAssortment = data.AssortmentList;            
 
-            $scope.clearAllFilters();           
+            $scope.clearAllFilters();
+            $scope.$apply();
 
-            $("#windows8").css("display", "none");            
-            
             $scope.addPinsToMap();
-        }
     }
 
     $scope.addPinsToMap = function () {
@@ -150,9 +146,9 @@
             $scope.priceList = [];
             return true;
         }
-    }    
+    }
 
-    $scope.modifyPricelistButtonHandler = function () {                     
+    $scope.modifyPricelistButtonHandler = function () {
         if (!ModifyPriceListPrep()) { return; }
 
         $scope.substractOutletMenuFromAssortment();
@@ -164,14 +160,14 @@
         var meal = null;
         var mealCellsInPrice = $("#PriceTable td:even");
         for (index in $scope.backupAssortment) {
-            meal = $scope.backupAssortment[index];            
+            meal = $scope.backupAssortment[index];
             if (mealCellsInPrice.length == 0 || mealCellsInPrice.text().indexOf(meal.EntityName) == -1) {
                 $scope.filteredMeals.push(meal);
             }
-        }        
+        }
     }
 
-    $scope.removeFromPriceClickHandler = function () {        
+    $scope.removeFromPriceClickHandler = function () {
         //add incomplete entity to the assortment
         //ID in this case is redundant
         var meal = [];
@@ -193,7 +189,7 @@
     }
 
     $scope.addMealFromAssortmentHandler = function () {
-        var mealName = $("#AssortmentBox :selected").text();        
+        var mealName = $("#AssortmentBox :selected").text();
         var index = FindIndexOfElementInArray($scope.filteredMeals, mealName);
         if (index == -1) { return; }
 
@@ -211,7 +207,7 @@
             $("#PriceTable tr:last").find("td:odd").html('<input type ="text" class="PriceCell" newRow maxlength="5">');
         });
         ButtonEnabler("RemoveMealFromPrice", $scope.priceList.length > 0);
-        ButtonEnabler("AddMealFromAssortment", false);        
+        ButtonEnabler("AddMealFromAssortment", false);
     }
 
     $scope.SaveClickHandler = function () {
@@ -222,121 +218,106 @@
             return;
         }
         $scope.priceList = UpdatePriceListFromTable($scope.priceList);
-        
+
         $scope.SendModifiedPriceData();
     }
-    
-    $scope.SendModifiedPriceData = function() {
-        $scope.url = $scope.putUrlHeader
-                    + 'UpdatePriceList&OutletID='
-                    + $scope.currentOutlet.toLocaleString();
-                    
+
+    $scope.SendModifiedPriceData = function () {
+        $scope.url = $scope.urlHeader+ 'UpdatePriceList';
+
         var priceString = GenerateParamStringFromPriceList($scope.priceList);
-        
-        $("#windows8").css("display", "block");        
-        $http({
-            url:        $scope.url,
-            method:     "POST",
-            data:       priceString,
-            headers:    { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }).success($scope.handlePriceListSent);
-    }    
-    
-    $scope.handlePriceListSent = function (response) {        
+
+        var baseEntity = {
+            EntityID : $scope.currentOutlet,
+            EntityName : priceString
+        }        
+                
+        AjaxPost($scope.url, baseEntity, $scope.handlePriceListSent);
+    }
+
+    $scope.handlePriceListSent = function (response) {
         PostValidationTableProcessor(false);
         priceListReadOnly = true;
         DisplayStatusChange(response);
         $timeout($scope.fetch, 150);
     }
 
-     $scope.SaveNewOutletHandler = function() {        
+    $scope.SaveNewOutletHandler = function () {
         var sendData = PrepareSendData();
 
-        $scope.url = $scope.putUrlHeader + "AddNewOutlet";
-
-        $http({
-             url: $scope.url,
-             method: "POST",
-             data: sendData,
-             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }).success($scope.hadleOutletUploaded);
-     }
-
-     $scope.hadleOutletUploaded = function (data, status) {
-         if (status == 200) {             
-             AddOutletClick();
-             $scope.hadleEntityUploaded(data, status);
-         }
-     }
-
-     $scope.FilterOutletsBySearchPhraseAndMeals = function (mealObject) {
-         var outletKey = $("#OutletSearchBox").val().toUpperCase();                  
-         var filteredAssortment = [];
-         var mealKey = "";
-         if (typeof mealObject == "undefined") {
-             mealKey = $("#AssortmtentFilterQueryBox").val().toUpperCase();
-             filteredAssortment = $scope.filteredMeals;
-         }
-         else {
-             filteredAssortment.push(mealObject);
-             mealKey = mealObject.EntityName;
-         }
-         
-         var blankMealResultSet = $scope.filteredMeals.length == 0;
-         //var ignoreMeals = !blankMealResultSet && $scope.filteredMeals.length == $scope.assortment.length;
-
-         if (outletKey.length == 0 && mealKey.length == 0) {
-             $scope.filteredOutlets = $scope.outlets;
-             return;
-         }
-
-         if (blankMealResultSet) {
-             $scope.filteredOutlets = [];
-             return;
-         }
-         
-         $scope.filteredOutlets = [];
-         
-         $.each($scope.outlets, function (key, Outletvalue) {
-             if (Outletvalue.EntityName.toUpperCase().indexOf(outletKey) >= 0) {                 
-                 if (OutletHasFilteredMeal(Outletvalue, filteredAssortment)) {
-                     $scope.filteredOutlets.push(Outletvalue)
-                 }
-             }
-         });
-     }
-    
-    $scope.ratingClick = function () {
-        if ($scope.selectedOutletObject == null) { return; }
-
-        var newRating = $('#SelectedOutletRating').RatingValue();
-
-        $scope.url = $scope.putUrlHeader
-                     + "RateOutlet"
-                     + "&OutletId=" + $scope.currentOutlet
-                     + "&Rating=" + newRating;
-
-        $http.post($scope.url).success($scope.handleRatingLoaded);
+        $scope.url = $scope.urlHeader + "AddNewOutlet";
+        
+        AjaxPost($scope.url, sendData, $scope.hadleOutletUploaded);
     }
 
-    $scope.handleRatingLoaded = function (data, status) {
-        if (status != 200) { return; }
+    $scope.hadleOutletUploaded = function (data) {
+        AddOutletClick();
+        $scope.hadleEntityUploaded(data);        
+    }
 
-        if (typeof data == "string") {
-            DisplayStatusChange(data);
-            $('#SelectedOutletRating').RatingValue($scope.selectedOutletObject.OutletRating);
+    $scope.FilterOutletsBySearchPhraseAndMeals = function (mealObject) {
+        var outletKey = $("#OutletSearchBox").val().toUpperCase();
+        var filteredAssortment = [];
+        var mealKey = "";
+        if (typeof mealObject == "undefined") {
+            mealKey = $("#AssortmtentFilterQueryBox").val().toUpperCase();
+            filteredAssortment = $scope.filteredMeals;
+        }
+        else {
+            filteredAssortment.push(mealObject);
+            mealKey = mealObject.EntityName;
+        }
+
+        var blankMealResultSet = $scope.filteredMeals.length == 0;
+        //var ignoreMeals = !blankMealResultSet && $scope.filteredMeals.length == $scope.assortment.length;
+
+        if (outletKey.length == 0 && mealKey.length == 0) {
+            $scope.filteredOutlets = $scope.outlets;
             return;
         }
 
+        if (blankMealResultSet) {
+            $scope.filteredOutlets = [];
+            return;
+        }
+
+        $scope.filteredOutlets = [];
+
+        $.each($scope.outlets, function (key, Outletvalue) {
+            if (Outletvalue.EntityName.toUpperCase().indexOf(outletKey) >= 0) {
+                if (OutletHasFilteredMeal(Outletvalue, filteredAssortment)) {
+                    $scope.filteredOutlets.push(Outletvalue)
+                }
+            }
+        });
+    }
+
+    $scope.ratingClick = function () {
+        if ($scope.selectedOutletObject == null) { return; }
+
+        var newRating = outletRatingNode.RatingValue();
+
+        outletRatingNode.RatingValue($scope.selectedOutletObject.OutletRating); //skip selection in case of failure
+
+        $scope.url = $scope.urlHeader
+                     + "RateOutlet"
+                     + "?OutletId=" + $scope.currentOutlet
+                     + "&Rating=" + newRating;
+
+        AjaxPost($scope.url, null, $scope.handleRatingLoaded);        
+    }
+
+    $scope.handleRatingLoaded = function (data, status) {       
         $scope.selectedOutletObject.OutletRating = data.OutletRating;
         $scope.selectedOutletObject.Votes = data.Votes;
+        $scope.$apply();
 
         $scope.updateRating();
     }
 
     $scope.updateRating = function () {
-        $('#SelectedOutletRating').RatingVote('off');
-        $('#SelectedOutletRating').RatingValue($scope.selectedOutletObject.OutletRating);
+        outletRatingNode.RatingVote('off');
+        outletRatingNode.RatingValue($scope.selectedOutletObject.OutletRating);
 
         for (var i in $scope.outlets) {
             if ($scope.outlets[i].EntityID = $scope.selectedOutletObject.EntityID) {
@@ -357,10 +338,10 @@
     }
 
     $scope.onAssortmentDblClick = function (mealName) {
-        if (!priceListReadOnly) {$scope.addMealFromAssortmentHandler();}
+        if (!priceListReadOnly) { $scope.addMealFromAssortmentHandler(); }
     }
 
-    $scope.clearAllFilters =function(){
+    $scope.clearAllFilters = function () {
         $("#AssortmtentFilterQueryBox").val("");
         $scope.filteredMeals = FilterArrayByEntityName($("#AssortmtentFilterQueryBox").val(), $scope.assortment);
 
@@ -377,10 +358,11 @@
     }
 
     $scope.fetch = function () {
-        $scope.url = $scope.getUrlHeader + 'Initialize&timestamp=' + Date.now();
-        $http.get($scope.url).success($scope.handleEntitiesLoaded);
+        //$scope.url = $scope.getUrlHeader + 'Initialize&timestamp=' + Date.now();
+        $scope.url = "../JunkService.svc/Initialize";        
+        AjaxGet($scope.url, $scope.handleEntitiesLoaded);
     };
 
     // Defer fetch for 500 miliseconds to give everything an opportunity layout
     $timeout($scope.fetch, 500);
-}
+};

@@ -145,18 +145,18 @@ function SendFeedback(subject, contactInfo, message) {
         DisplayStatusChange(dictionary.emptyFeedbackMessage[langId]);
         return;
     }
+    
+    var feedback = {
+        Subject: subject,
+        ContactInfo: contactInfo,
+        Message: message
+    };
 
-    $.ajax({
-        url: '../RequestHandlers/FeedbackHandler.aspx?RequestAction=SubmitFeedback&Subject=' + subject + '&ContactInfo=' + contactInfo,
-        method: "POST",
-        data: {msg :message},
-        dataType : "text",
-        success: FeedbackSubmitted
-    });
+    AjaxPost("../JunkService.svc/SubmitFeedback",feedback, FeedbackSubmitted);
 }
 
 function FeedbackSubmitted(data) {    
-    var status = data == "success" ? dictionary.feedbackSuccess[langId] : dictionary.feedbackFailed[langId];
+    var status = data ? dictionary.feedbackSuccess[langId] : dictionary.feedbackFailed[langId];
     DisplayStatusChange(status + " junkfood.vn@gmail.com");
 }
 

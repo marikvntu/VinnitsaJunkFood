@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace JunkBackEnd.Entities
-{
+namespace JunkBackEnd.Entities{
+    [DataContract]
     public class AssortmentEntity: BaseEntity{        
         //TODO:ADD FUNCTIONALITY FOR INGRIDIENTS
         //public List<int> IngridientsIdList { get; set; }
-        public string MealDescription { get; set; } 
-    }
 
-    public class AssortmentJson {
-        public string name {get; set;}
-        public string description { get; set; }
-    }
+        [DataMember]
+        public string MealDescription { get; set; } 
+    }    
 }

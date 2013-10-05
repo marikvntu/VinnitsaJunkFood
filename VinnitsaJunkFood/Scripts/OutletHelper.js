@@ -1,8 +1,10 @@
 ﻿function PrepareSendData() {
+
     if (newPushpin == null) {
         DisplayStatusChange(dictionary.selectOutlet[langId]);
         return;
     }
+
     var latitude = newOutletLatitude;
     var longitude = newOutletLongitude;
     var outletName = $("#NewOutletName").val();
@@ -35,7 +37,6 @@
         ImageUrl: imageUrl,
         Votes: voteCount
     }
-    $("#windows8").css("display", "block");
 
     return sendData;
 }

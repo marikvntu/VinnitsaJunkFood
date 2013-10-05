@@ -30,5 +30,7 @@ var dictionary = {
     outletDescriptionMaxLen: ["Outlet description may not be more than 2000 characters", "Описание торговой точки не может быть больше 2000 символов", "Опис торгової точки не може бути довшим за 2000 символів"],
     ratingConstraint: ["Please enter numeric value to rating or leave blank", "Пожалуйста введи численое значение рейтинга или оставь пустым", "Будь-ласка введи числове значення рейтингу чи залиш порожнім"],
     commentLength: ["Nickname and Comment have to contain more than 3 characters", "Ник и комментарий не могут быть меньше 3 символов", "Нік, або коментарій не може бути менше символів"],
-    selectOutlet : ["You must first set the location of the outlet on a map","Ты сперва должен обозначить нахождение точки на карте","Ти спочатку повинен позначити місцезнаходження точки на карті"]
+    selectOutlet: ["You must first set the location of the outlet on a map", "Ты сперва должен обозначить нахождение точки на карте", "Ти спочатку повинен позначити місцезнаходження точки на карті"],
+    errorCouldNotProcess: ["Error: durnig processing ", "Ошибка: при обработке ", "Помилка: при обробці"],
+    withStatus: [" with status ", " со статусом "," зі статусом "]
 };

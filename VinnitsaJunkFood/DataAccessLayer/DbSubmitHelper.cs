@@ -10,37 +10,36 @@ namespace JunkBackEnd.DataAccessLayer
 {
     class DbSubmitHelper{
 #region DataMembers
-        private VinnitsaEntities m_dbEntities;
-        private string m_connectionString = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";
-        private static readonly DbSubmitHelper m_instance = new DbSubmitHelper();
+        private VinnitsaEntities _dbEntities;
+        private string _connectionString = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";
+        private static readonly DbSubmitHelper _instance = new DbSubmitHelper();
 #endregion
 
 #region Contructor
         private DbSubmitHelper(){
-            m_connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
+            _connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
         }
 #endregion
 
 #region Properties
         public static DbSubmitHelper Instance{
             get{
-                return m_instance;
+                return _instance;
             }
         }
 #endregion
 
 #region Methods
-        internal bool AddAssortmentEntity(string entityName, out int assortmentID, string description = null)
-        {
+        internal bool AddAssortmentEntity(string entityName, out int assortmentID, string description = null){
             bool isSuccessful = false;            
             var assortmentRow = new tblAssortments(){
                 nvcAssortmentName = entityName,
                 nvcDescription = description
             };
 
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString)){
-                m_dbEntities.AddTotblAssortments(assortmentRow);
-                m_dbEntities.SaveChanges();
+            using (_dbEntities = new VinnitsaEntities(_connectionString)){
+                _dbEntities.AddTotblAssortments(assortmentRow);
+                _dbEntities.SaveChanges();
                 
                 //assign assortmentID for in-memory variable
                 assortmentID = assortmentRow.iAssortmentId;
@@ -50,13 +49,12 @@ namespace JunkBackEnd.DataAccessLayer
             return isSuccessful;
         }
 
-        internal bool UpdatePriceList(int outletID, List<PriceListEntity> newPriceList)
-        {
+        internal bool UpdatePriceList(int outletID, List<PriceListEntity> newPriceList){
             bool isSuccessful = false;
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString)){                
+            using (_dbEntities = new VinnitsaEntities(_connectionString)){                
                 //delete all rows for this outlet                                
-                foreach (var tableRow in m_dbEntities.tblPriceLists.Where(row => row.iOutletId == outletID)){
-                    m_dbEntities.tblPriceLists.DeleteObject(tableRow);                                            
+                foreach (var tableRow in _dbEntities.tblPriceLists.Where(row => row.iOutletId == outletID)){
+                    _dbEntities.tblPriceLists.DeleteObject(tableRow);                                            
                 }
                 
                 //add remaining rows if any
@@ -65,10 +63,10 @@ namespace JunkBackEnd.DataAccessLayer
                     tableRow.fPrice = (decimal)item.Price;
                     tableRow.iAssortmentId = item.EntityID;
                     tableRow.iOutletId = outletID;
-                    m_dbEntities.tblPriceLists.AddObject(tableRow);
+                    _dbEntities.tblPriceLists.AddObject(tableRow);
                 }
 
-                m_dbEntities.SaveChanges();
+                _dbEntities.SaveChanges();
                 isSuccessful = true;
             }
 
@@ -77,7 +75,7 @@ namespace JunkBackEnd.DataAccessLayer
 
         internal bool AddOutletEntity(OutletEntity outlet, out int outletId){
             bool isSuccessful = false;
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString))
+            using (_dbEntities = new VinnitsaEntities(_connectionString))
             {
                 var outletRow = new tblOutlets() {
                                                     fLatitude = outlet.Latitude,
@@ -89,8 +87,8 @@ namespace JunkBackEnd.DataAccessLayer
                                                     iVotes = outlet.Votes
                                                  };
                 
-                m_dbEntities.tblOutlets.AddObject(outletRow);
-                m_dbEntities.SaveChanges();
+                _dbEntities.tblOutlets.AddObject(outletRow);
+                _dbEntities.SaveChanges();
                 outletId = outletRow.iOutletId;
                 isSuccessful = true;
             }
@@ -101,7 +99,7 @@ namespace JunkBackEnd.DataAccessLayer
         internal bool AddCommentEntity(int outletId, CommentEntity comment, out int commentId){
             bool isSuccessful = false;
             commentId = 0;
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString)){
+            using (_dbEntities = new VinnitsaEntities(_connectionString)){
                 var commentRow = new tblComments() {
                                                         iOutletId = outletId,
                                                         nvcUserName = comment.UserName,                                                        
@@ -109,8 +107,8 @@ namespace JunkBackEnd.DataAccessLayer
                                                         nvcCommentText = comment.CommentText,
                                                         iCommentRating = comment.CommentRating
                                                    };
-                m_dbEntities.tblComments.AddObject(commentRow);
-                m_dbEntities.SaveChanges();
+                _dbEntities.tblComments.AddObject(commentRow);
+                _dbEntities.SaveChanges();
                 isSuccessful = true;
                 commentId = commentRow.iCommentId;
             }
@@ -119,15 +117,15 @@ namespace JunkBackEnd.DataAccessLayer
 
         internal bool UpdateRating(int outletId, double recalculatedRating, int recalculatedVotes){
             bool isSuccessful = false;
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString)){
-                var outletRow = m_dbEntities.tblOutlets.Where(or => or.iOutletId == outletId).FirstOrDefault();
+            using (_dbEntities = new VinnitsaEntities(_connectionString)){
+                var outletRow = _dbEntities.tblOutlets.Where(or => or.iOutletId == outletId).FirstOrDefault();
 
                 if (outletRow == null) { return false; }
 
                 outletRow.iVotes = recalculatedVotes;
                 outletRow.rRating = (float)recalculatedRating;
                 
-                m_dbEntities.SaveChanges();
+                _dbEntities.SaveChanges();
                 isSuccessful = true;
             }
             return isSuccessful;
@@ -135,8 +133,8 @@ namespace JunkBackEnd.DataAccessLayer
 
         internal bool VoteForComment(int commentId, int delta){
             bool isSuccessful = false;
-            using (m_dbEntities = new VinnitsaEntities(m_connectionString)) {
-                var commentRow = m_dbEntities.tblComments
+            using (_dbEntities = new VinnitsaEntities(_connectionString)) {
+                var commentRow = _dbEntities.tblComments
                                     .Where(c => c.iCommentId == commentId)
                                     .FirstOrDefault();
                 if (commentRow == null) {return false;}
@@ -145,20 +143,12 @@ namespace JunkBackEnd.DataAccessLayer
                                             commentRow.iCommentRating + delta :
                                             delta;                
 
-                m_dbEntities.SaveChanges();
+                _dbEntities.SaveChanges();
                 isSuccessful = true;
             }            
             return isSuccessful;
         }
 
-#endregion
-
-
-
-
-
-
-
-        
+#endregion        
     }
 }

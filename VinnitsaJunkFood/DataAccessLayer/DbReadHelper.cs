@@ -11,24 +11,15 @@ using VinnitsaJunkFood.DataAccessLayer;
 
 namespace JunkBackEnd.DataAccessLayer{       
     
-    public class DbReadHelper{
+    public class DbReadHelper : IDbReader {
 #region DataMembers
-        private VinnitsaEntities m_dbEntities;
-        private string m_connectionString; // = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";        
-        private static readonly DbReadHelper m_instance = new DbReadHelper();
+        private VinnitsaEntities _dbEntities;
+        private string _connectionString; // = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";        
 #endregion
 
 #region Contructor
-        private DbReadHelper(){
-            m_connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
-        }
-#endregion
-
-#region Properties
-        public static DbReadHelper Instance {
-            get{
-                return m_instance;
-            }
+        public DbReadHelper(){
+            _connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
         }
 #endregion
 
@@ -47,9 +38,9 @@ namespace JunkBackEnd.DataAccessLayer{
                                           ref Dictionary<int, List<CommentEntity>> commentsDic){
             try{
                 
-                using (m_dbEntities = new VinnitsaEntities(m_connectionString)){
+                using (_dbEntities = new VinnitsaEntities(_connectionString)){
                     //Fill outlets entities                    
-                    var outletQuery = from ol in m_dbEntities.tblOutlets
+                    var outletQuery = from ol in _dbEntities.tblOutlets
                                       select new OutletEntity()
                                       {
                                           EntityID = ol.iOutletId,
@@ -63,7 +54,7 @@ namespace JunkBackEnd.DataAccessLayer{
                                       };
                     
                     foreach (var item in outletQuery){                        
-                        item.AssortmentPriceList = m_dbEntities.tblPriceLists.
+                        item.AssortmentPriceList = _dbEntities.tblPriceLists.
                             Where(pr => pr.iOutletId == item.EntityID).
                             Select(p => new ItemPriceWrapper()
                             {
@@ -75,7 +66,7 @@ namespace JunkBackEnd.DataAccessLayer{
                         //Attach comment dictionary to each outlet
                         commentsDic.Add(item.EntityID, new List<CommentEntity>());
                         
-                        var commentQuery = (from c in m_dbEntities.tblComments
+                        var commentQuery = (from c in _dbEntities.tblComments
                                             where c.iOutletId == item.EntityID
                                             orderby c.iCommentId descending
                                             select new 
@@ -108,7 +99,7 @@ namespace JunkBackEnd.DataAccessLayer{
                     }
                     
                     //Fill assortment entities
-                    assortment = m_dbEntities.tblAssortments.Select(a =>
+                    assortment = _dbEntities.tblAssortments.Select(a =>
                             new AssortmentEntity()
                             {
                                 EntityID = a.iAssortmentId,
@@ -118,7 +109,7 @@ namespace JunkBackEnd.DataAccessLayer{
                         ).ToList();
 
                     //Fill ingridient entities
-                    ingridients = m_dbEntities.tblIngridients.Select(i =>
+                    ingridients = _dbEntities.tblIngridients.Select(i =>
                         new BaseEntity()
                         {
                             EntityID = i.iIngridientId,

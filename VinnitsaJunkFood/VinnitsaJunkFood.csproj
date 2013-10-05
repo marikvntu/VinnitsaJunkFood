@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,14 +44,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.DomainServices.EntityFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -76,17 +77,16 @@
     <Content Include="icons\small-orange-pushpin.png" />
     <Content Include="icons\small-red-new-pushpin.png" />
     <Content Include="icons\small-red-pushpin.png" />
+    <Content Include="JunkService.svc" />
     <Content Include="Pages\AboutEng.html" />
     <Content Include="Pages\AboutRus.html" />
     <Content Include="Pages\AboutUkr.html" />
     <Content Include="Pages\JunkFoodRus.htm" />
     <Content Include="Pages\JunkFoodUkr.htm" />
-    <Content Include="RequestHandlers\FeedbackHandler.aspx" />
-    <Content Include="RequestHandlers\PutRequestHandler.aspx" />
     <Content Include="css\metro.css" />
     <Content Include="css\style.css" />
     <Content Include="Pages\JunkFoodEng.htm" />
-    <Content Include="RequestHandlers\GetRequestHandler.aspx" />
+    <Content Include="Scripts\AjaxHelper.js" />
     <Content Include="Scripts\AngularJs.js" />
     <Content Include="Scripts\BingMaps.js" />
     <Content Include="Scripts\CommentController.js" />
@@ -100,31 +100,26 @@
     <Content Include="Scripts\pagecontrol.js" />
     <Content Include="Scripts\rating.js" />
     <Content Include="Scripts\UiManipulations.js" />
-    <Content Include="RequestHandlers\ServicePage.aspx" />
+    <Content Include="Pages\ServicePage.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessLayer\RequestHelper.cs" />
-    <Compile Include="BusinessLayer\ResponseBuilder.cs" />
+    <Compile Include="BusinessLayer\Helpers\FeedbackHelper.cs" />
+    <Compile Include="BusinessLayer\Helpers\InputHelper.cs" />
+    <Compile Include="BusinessLayer\Helpers\JsonHelper.cs" />
+    <Compile Include="BusinessLayer\SiteCore.cs" />
     <Compile Include="BusinessLayer\SiteManager.cs" />
-    <Compile Include="BusinessLayer\SubmitHelper.cs" />
+    <Compile Include="BusinessLayer\Helpers\SubmitHelper.cs" />
+    <Compile Include="DataAccessLayer\IDbReader.cs" />
+    <Compile Include="Entities\FeedbackEntity.cs" />
+    <Compile Include="Entities\ResponseContainer.cs" />
+    <Compile Include="IJunkService.cs" />
+    <Compile Include="JunkService.svc.cs">
+      <DependentUpon>JunkService.svc</DependentUpon>
+    </Compile>
     <Compile Include="Logger\FileLogger.cs" />
-    <Compile Include="RequestHandlers\FeedbackHandler.aspx.cs">
-      <DependentUpon>FeedbackHandler.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="RequestHandlers\FeedbackHandler.aspx.designer.cs">
-      <DependentUpon>FeedbackHandler.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="RequestHandlers\PutRequestHandler.aspx.cs">
-      <DependentUpon>PutRequestHandler.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="RequestHandlers\PutRequestHandler.aspx.designer.cs">
-      <DependentUpon>PutRequestHandler.aspx</DependentUpon>
-    </Compile>
     <Compile Include="DataAccessLayer\ConnectionHelper.cs" />
     <Compile Include="DataAccessLayer\DbReadHelper.cs" />
     <Compile Include="DataAccessLayer\DbSubmitHelper.cs" />
@@ -143,18 +138,11 @@
     <Compile Include="Entities\PriceListEntity.cs" />
     <Compile Include="Entities\ResponseWrapperEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestHandlers\GetRequestHandler.aspx.cs">
-      <DependentUpon>GetRequestHandler.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="RequestHandlers\GetRequestHandler.aspx.designer.cs">
-      <DependentUpon>GetRequestHandler.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="RequestHandlers\ServicePage.aspx.cs">
+    <Compile Include="Pages\ServicePage.aspx.cs">
       <DependentUpon>ServicePage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="RequestHandlers\ServicePage.aspx.designer.cs">
+    <Compile Include="Pages\ServicePage.aspx.designer.cs">
       <DependentUpon>ServicePage.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -182,6 +170,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

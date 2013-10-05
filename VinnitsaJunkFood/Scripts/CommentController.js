@@ -1,23 +1,23 @@
 ﻿function CommentsController($scope, $http) {
     $scope.comments = [];
-    var commentsActive = false;
-    $scope.getUrlHeader = '../RequestHandlers/GetRequestHandler.aspx?RequestAction=';
-    $scope.putUrlHeader = '../RequestHandlers/PutRequestHandler.aspx?RequestAction=';
+    var commentsActive = false;    
+    $scope.urlHeader = "../JunkService.svc/";   
     $scope.currentOutletId = 0;
     $scope.voteInfo = null;
 
     $scope.$on('getCommentsEvent', function (event, outletId) {
         $scope.currentOutletId = outletId;
-        var url = $scope.getUrlHeader + 'GetComments&Id=' + outletId;
-        $http.get(url).success($scope.handleCommentsLoaded);
+        var url = $scope.urlHeader + 'GetComments?Id=' + outletId;        
+        AjaxGet(url, $scope.handleCommentsLoaded);
     });
 
 
-    $scope.handleCommentsLoaded = function (data, status) {
-        if (typeof data == "string") { DisplayStatusChange(data); return; }
-        $scope.comments = data;
-
-        $("#windows8").css("display", "none");
+    $scope.handleCommentsLoaded = function (data, status) {                
+        //force redraw
+        $scope.$apply(function () {
+            $scope.comments = data;
+        });
+        
         UpdateCommentCount(data.length);
         $scope.refreshThumbsUI();
     }
@@ -30,19 +30,19 @@
     }
     
     $scope.VoteCommentHandler = function (commentID, thumbsUp ) {
-        var thumbs = thumbsUp ? "up" : "down";        
-        $scope.voteInfo =  {
+        var thumbs = thumbsUp ? "up" : "down";
+
+        $scope.voteInfo = {
                             commentId: commentID,
                             vote: thumbs
-                            };
+        };
 
-        var url = $scope.putUrlHeader +
-            "VoteComment&CommentId=" +
+        var url = $scope.urlHeader +
+            "VoteComment?CommentId=" +
             commentID + "&Thumbs=" + thumbs
             + "&OutletId=" + $scope.currentOutletId;
-
-        $http.post(url)
-             .success($scope.handleCommentVoted);
+        
+        AjaxPost(url, null, $scope.handleCommentVoted);
     }
 
     $scope.handleCommentVoted = function (data, status) {
@@ -51,11 +51,15 @@
             return;
         }
 
-        $.grep($scope.comments, function (item) {
+        jQuery.each($scope.comments, function (index, item) {
             if (item.EntityID == $scope.voteInfo.commentId) {
                 item.CommentRating = data;
             }
         });
+
+        //force redraw
+        $scope.$apply();
+
         $scope.refreshThumbsUI();
     }
 
@@ -86,20 +90,17 @@
             return;
         }
 
-        $scope.url = $scope.putUrlHeader
-                    + "AddNewComment"
-                    + "&OutletId=" + $scope.currentOutlet
-                    + "&UserName=" + username;
-
+        var requestObject = {            
+            EntityID: $scope.currentOutletId,
+            UserName: username,
+            CommentText: commentText
+        };        
+        
+        $scope.url = $scope.urlHeader+ "AddNewComment";
+                    
         $scope.AddNewCommentHandler();
-        $("#windows8").css("display", "block");
 
-        $http({
-            url: $scope.url,
-            method: "POST",
-            data: commentText,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }).success($scope.handleCommentsLoaded);
+        AjaxPost($scope.url, requestObject, $scope.handleCommentsLoaded);
     }
 
     $scope.refreshThumbsUI = function(){
