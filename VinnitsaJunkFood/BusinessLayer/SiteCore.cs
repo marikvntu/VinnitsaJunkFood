@@ -79,9 +79,9 @@ namespace JunkBackEnd.BusinessLayer{
                 return _commentsDictionary[id];
             }
             return new List<CommentEntity>();
-        }        
+        }
 
-        protected string SubmitMeal(AssortmentEntity meal, out bool success){
+        protected string SubmitMeal(AssortmentEntity meal, out bool success) {
             string submitStatus;
 
             success = InputHelper.ValidateAndPrepareMealData(meal, ref _assortmentList, out submitStatus);
@@ -92,17 +92,17 @@ namespace JunkBackEnd.BusinessLayer{
 
             //add to assortment list, in successful scenario
             _assortmentList.Add(meal);
-            
+
             refreshJsonStringCache();
 
             return submitStatus;
         }
 
-        protected string UpdatePriceList(int outletId, string priceListParams, out bool success){            
+        protected string UpdatePriceList(int outletId, string priceListParams, out bool success) {
             string submitStatus;
             List<PriceListEntity> requestPriceList;
 
-            success = InputHelper.ValidateAndPreparePriceListData(priceListParams, 
+            success = InputHelper.ValidateAndPreparePriceListData(priceListParams,
                                                                         out submitStatus,
                                                                         out requestPriceList);
 
@@ -119,11 +119,11 @@ namespace JunkBackEnd.BusinessLayer{
                                                 ref _assortmentList,
                                                 out submitStatus);
 
-            if (!success){return submitStatus;}
+            if (!success) { return submitStatus; }
 
             //overwrite price list for the given outlet
             currentOutlet.AssortmentPriceList = requestPriceList.
-                                                Select(p => new ItemPriceWrapper{
+                                                Select(p => new ItemPriceWrapper {
                                                     AssortmentId = p.EntityID,
                                                     Price = p.Price
                                                 }).ToList();
@@ -148,29 +148,29 @@ namespace JunkBackEnd.BusinessLayer{
             refreshJsonStringCache();
             return submitStatus;
         }
-        
-        protected object AddComment(CommentEntity comment, out bool successful){            
-                comment.DateTime = DateTime.Now.ToString("hh:mm on dd.MM.yyyy", CultureInfo.InvariantCulture);
-                int outletId = comment.EntityID;
 
-                string operationStatus;
-                if (!_commentsDictionary.ContainsKey(outletId)){
-                    operationStatus = "Could not find outletId:" + outletId.ToString();                    
-                    successful = false;
-                    return operationStatus;
-                }
+        protected object AddComment(CommentEntity comment, out bool successful) {
+            comment.DateTime = DateTime.Now.ToString("hh:mm on dd.MM.yyyy", CultureInfo.InvariantCulture);
+            int outletId = comment.EntityID;
 
-                successful = SubmitHelper.SubmitComment(outletId, comment, out operationStatus);
+            string operationStatus;
+            if (!_commentsDictionary.ContainsKey(outletId)) {
+                operationStatus = "Could not find outletId:" + outletId.ToString();
+                successful = false;
+                return operationStatus;
+            }
 
-                if (!successful){ return operationStatus; }
+            successful = SubmitHelper.SubmitComment(outletId, comment, out operationStatus);
 
-                insertCommentConsideringRating(_commentsDictionary[outletId], comment);                
-                
-                return _commentsDictionary[outletId];
+            if (!successful) { return operationStatus; }
+
+            insertCommentConsideringRating(_commentsDictionary[outletId], comment);
+
+            return _commentsDictionary[outletId];
         }
 
-        protected object RateOutlet(int outletId, int newRating, out bool success, out string operationStatus){
-            success = true ;
+        protected object RateOutlet(int outletId, int newRating, out bool success, out string operationStatus) {
+            success = true;
             double newAverageRating;
             int newVoteCount;
 
@@ -178,7 +178,7 @@ namespace JunkBackEnd.BusinessLayer{
 
             success = SubmitHelper.RateOutlet(outlet, newRating, out operationStatus, out newAverageRating, out newVoteCount);
 
-            if (!success){ return operationStatus; };
+            if (!success) { return operationStatus; };
 
             //update existing in-memory data
             outlet.OutletRating = newAverageRating;
@@ -187,45 +187,45 @@ namespace JunkBackEnd.BusinessLayer{
             operationStatus = "Outlet with Id - " + outletId.ToString() + " was voted with rating :" + newRating.ToString() + " resulting in new rating: " + newAverageRating.ToString();
 
             refreshJsonStringCache();
-            return outlet;            
+            return outlet;
         }
 
-        protected string ThumbsComment(int outletId, int commentId, string thumbs, out bool success){
+        protected string ThumbsComment(int outletId, int commentId, string thumbs, out bool success) {
             string opResult = "Failed:";
             success = false;
 
-            if (thumbs != "up" && thumbs != "down"){
-                opResult += "Incorrect parameter name for Thumbs - it is: "+ thumbs;                
+            if (thumbs != "up" && thumbs != "down") {
+                opResult += "Incorrect parameter name for Thumbs - it is: " + thumbs;
                 return opResult;
             }
 
             int voteDelta = thumbs == "up" ? 1 : -1;
 
-            if (!_commentsDictionary.ContainsKey(outletId)){
-                opResult += "Could not find outletId:" + outletId.ToString();                
+            if (!_commentsDictionary.ContainsKey(outletId)) {
+                opResult += "Could not find outletId:" + outletId.ToString();
                 return opResult;
             }
 
             List<CommentEntity> commentList = _commentsDictionary[outletId];
             CommentEntity comment = commentList.Find(c => c.EntityID == commentId);
 
-            if (comment == default(CommentEntity)){
-                opResult += "Could not find commentId:" + commentId.ToString();                
+            if (comment == default(CommentEntity)) {
+                opResult += "Could not find commentId:" + commentId.ToString();
                 return opResult;
             }
 
             success = SubmitHelper.VoteComment(ref comment, voteDelta, out opResult);
-            if (!success) {                
+            if (!success) {
                 return opResult;
             }
 
             sortOutletCommentsByLikes(commentList);
-            
-            return comment.CommentRating.ToString();            
+
+            return comment.CommentRating.ToString();
         }
 
         #region PrivateMethods
-        private OutletEntity findOutletById(int outletID){
+        private OutletEntity findOutletById(int outletID) {
             return _outletsList
                    .Where(outlet => outlet.EntityID == outletID)
                    .FirstOrDefault();
@@ -234,7 +234,7 @@ namespace JunkBackEnd.BusinessLayer{
         /// <summary>
         /// Performs sorting of outlet entities by name and meal entity by name
         /// </summary>
-        private void sortMainEntitiesByName(){
+        private void sortMainEntitiesByName() {
             _outletsList = _outletsList.
                             OrderBy(outlet => outlet.EntityName).
                             ToList();
@@ -254,16 +254,16 @@ namespace JunkBackEnd.BusinessLayer{
         private void checkAndSwapCommentsInList(List<CommentEntity> topList, List<CommentEntity> fullList, int index) {
             if (fullList.Count <= index || topList.Count <= index) { return; }
 
-            if (topList[index] != fullList[index]) {                                
+            if (topList[index] != fullList[index]) {
                 fullList.Remove(topList[index]);
                 fullList.Insert(index, topList[index]);
             }
-        }        
+        }
 
-        private void sortCommentsDictionaryByLikes() {            
-            foreach (var commentList in _commentsDictionary){                
-                sortOutletCommentsByLikes(commentList.Value);                
-            }            
+        private void sortCommentsDictionaryByLikes() {
+            foreach (var commentList in _commentsDictionary) {
+                sortOutletCommentsByLikes(commentList.Value);
+            }
         }
 
         /// <summary>
@@ -271,29 +271,26 @@ namespace JunkBackEnd.BusinessLayer{
         /// </summary>
         /// <param name="list"></param>
         /// <param name="comment"></param>
-        private void insertCommentConsideringRating(List<CommentEntity> list, CommentEntity comment){
+        private void insertCommentConsideringRating(List<CommentEntity> list, CommentEntity comment) {
             for (int i = 0; i < 2; i++) {
-                if (list.Count > i && list[i].CommentRating <= 0)
-                {
+                if (list.Count > i && list[i].CommentRating <= 0) {
                     list.Insert(i, comment);
                     return;
                 }
             }
-            if (list.Count > 2)
-                { list.Insert(2, comment); }
-            else
-                { list.Add(comment); }
+            if (list.Count > 2) { list.Insert(2, comment); }
+            else { list.Add(comment); }
         }
 
         /// <summary>
         /// Rebuilds cached JSON string after in-memory entities refresh
         /// </summary>
-        private void refreshJsonStringCache(){
+        private void refreshJsonStringCache() {
             sortMainEntitiesByName();
             _logger.WriteLog("Refreshing Json string cache...");
             _initialJsonStringCache = JsonHelper.ReturnJsonFromEntities(_outletsList, _assortmentList);
         }
         #endregion
-        #endregion
+#endregion
     }
 }

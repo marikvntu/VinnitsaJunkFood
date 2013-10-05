@@ -41,11 +41,9 @@ namespace VinnitsaJunkFood.BusinessLayer
         /// <param name="mealJson"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        public string SubmitAssortmentEntity(AssortmentEntity mealObject, out bool success)
-        {
+        public string SubmitAssortmentEntity(AssortmentEntity mealObject, out bool success) {
             //thread-safe saving
-            lock (_lockObj)
-            {
+            lock (_lockObj) {
                 string submitStatus = SubmitMeal(mealObject, out success);
 
                 WriteToLog(submitStatus);
@@ -60,10 +58,8 @@ namespace VinnitsaJunkFood.BusinessLayer
         /// <param name="outletID">EntityID of outlet</param>
         /// <param name="priceListParams">Request string from webform containing MealName/price pairs</param>
         /// <returns>status string of the current operation</returns>
-        public string SubmitPriceList(int outletID, string priceListParams, out bool success)
-        {
-            lock (_lockObj)
-            {
+        public string SubmitPriceList(int outletID, string priceListParams, out bool success) {
+            lock (_lockObj) {
                 string submitStatus = UpdatePriceList(outletID, priceListParams, out success);
 
                 WriteToLog(submitStatus);
@@ -76,10 +72,8 @@ namespace VinnitsaJunkFood.BusinessLayer
         /// </summary>
         /// <param name="paramJson">OutletEntity in form of JSON</param>
         /// <returns></returns>
-        public string SubitNewOutlet(OutletEntity outletObject, out bool success)
-        {
-            lock (_lockObj)
-            {
+        public string SubitNewOutlet(OutletEntity outletObject, out bool success) {
+            lock (_lockObj) {
                 string submitStatus = AddNewOutlet(outletObject, out success);
 
                 WriteToLog(submitStatus);
@@ -94,10 +88,8 @@ namespace VinnitsaJunkFood.BusinessLayer
         /// <param name="userName">User name</param>
         /// <param name="commentText">Text of the comment</param>
         /// <returns></returns>
-        public object SubmitComment(CommentEntity comment, out bool successful)
-        {
-            lock (_lockObj)
-            {
+        public object SubmitComment(CommentEntity comment, out bool successful) {
+            lock (_lockObj) {
                 object result = AddComment(comment, out successful);
                 string msg = successful ?
                                 "Comment was added for outletID- " + comment.EntityID.ToString() + " from user: " + comment.UserName + " with text :\n" + comment.CommentText
@@ -108,10 +100,8 @@ namespace VinnitsaJunkFood.BusinessLayer
             }
         }
 
-        public string VoteComment(int outletId, int commentId, string thumbs, out bool successful)
-        {
-            lock (_lockObj)
-            {
+        public string VoteComment(int outletId, int commentId, string thumbs, out bool successful) {
+            lock (_lockObj) {
                 string result = ThumbsComment(outletId, commentId, thumbs, out successful);
 
                 WriteToLog(result);
@@ -119,10 +109,8 @@ namespace VinnitsaJunkFood.BusinessLayer
             }
         }
 
-        public object RateOutlet(int outletId, int newRating, out bool success)
-        {
-            lock (_lockObj)
-            {
+        public object RateOutlet(int outletId, int newRating, out bool success) {
+            lock (_lockObj) {
                 string opResult;
                 object result = RateOutlet(outletId, newRating, out success, out opResult);
 

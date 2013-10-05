@@ -14,12 +14,12 @@ namespace JunkBackEnd.DataAccessLayer{
     public class DbReadHelper : IDbReader {
 #region DataMembers
         private VinnitsaEntities _dbEntities;
-        private string _connectionString; // = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";        
+        private string m_connectionString; // = "metadata=res://*/DataAccessLayer.VinnitsaDBModel.csdl|res://*/DataAccessLayer.VinnitsaDBModel.ssdl|res://*/DataAccessLayer.VinnitsaDBModel.msl;provider=System.Data.SqlClient;provider connection string=';data source=.\\SQLEXPRESS;initial catalog=JunkDB;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework'";        
 #endregion
 
 #region Contructor
         public DbReadHelper(){
-            _connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
+            m_connectionString = VinnitsaJunkFood.DataAccessLayer.ConnectionHelper.GetConnectionString();
         }
 #endregion
 
@@ -38,20 +38,19 @@ namespace JunkBackEnd.DataAccessLayer{
                                           ref Dictionary<int, List<CommentEntity>> commentsDic){
             try{
                 
-                using (_dbEntities = new VinnitsaEntities(_connectionString)){
+                using (_dbEntities = new VinnitsaEntities(m_connectionString)){
                     //Fill outlets entities                    
                     var outletQuery = from ol in _dbEntities.tblOutlets
-                                      select new OutletEntity()
-                                      {
-                                          EntityID = ol.iOutletId,
-                                          EntityName = ol.nvcOutletName,
-                                          Latitude = ol.fLatitude,
-                                          Longitude = ol.fLongitude,
-                                          ImageUrl = ol.nvcImagePath,
-                                          OutletRating = (double?)ol.rRating ?? 0,
-                                          Description = ol.nvcDescription,
-                                          Votes = (int?) ol.iVotes ?? 0
-                                      };
+                                      select new OutletEntity() {
+                                                                      EntityID = ol.iOutletId,
+                                                                      EntityName = ol.nvcOutletName,
+                                                                      Latitude = ol.fLatitude,
+                                                                      Longitude = ol.fLongitude,
+                                                                      ImageUrl = ol.nvcImagePath,
+                                                                      OutletRating = (double?)ol.rRating ?? 0,
+                                                                      Description = ol.nvcDescription,
+                                                                      Votes = (int?) ol.iVotes ?? 0
+                                                                };
                     
                     foreach (var item in outletQuery){                        
                         item.AssortmentPriceList = _dbEntities.tblPriceLists.
@@ -70,22 +69,22 @@ namespace JunkBackEnd.DataAccessLayer{
                                             where c.iOutletId == item.EntityID
                                             orderby c.iCommentId descending
                                             select new 
-                                            {
-                                                EntityID = c.iCommentId,
-                                                CommentText = c.nvcCommentText,
-                                                UserName = c.nvcUserName,
-                                                DateTime = c.dtCommentDateTime,
-                                                CommentRating = c.iCommentRating ?? 0
-                                            });
+                                                        {
+                                                            EntityID = c.iCommentId,
+                                                            CommentText = c.nvcCommentText,
+                                                            UserName = c.nvcUserName,
+                                                            DateTime = c.dtCommentDateTime,
+                                                            CommentRating = c.iCommentRating ?? 0
+                                                        });
 
                         foreach (var comment in commentQuery){
                             var comm = new CommentEntity(){
-                                EntityID = comment.EntityID,
-                                CommentText = comment.CommentText,
-                                UserName = comment.UserName,
-                                DateTime = comment.DateTime.ToString("hh:mm on dd.MM.yyyy ", CultureInfo.InvariantCulture),
-                                CommentRating = comment.CommentRating
-                            };
+                                                                EntityID = comment.EntityID,
+                                                                CommentText = comment.CommentText,
+                                                                UserName = comment.UserName,
+                                                                DateTime = comment.DateTime.ToString("hh:mm on dd.MM.yyyy ", CultureInfo.InvariantCulture),
+                                                                CommentRating = comment.CommentRating
+                                                            };
                             commentsDic[item.EntityID].Add(comm);    
                         }
 
@@ -93,28 +92,27 @@ namespace JunkBackEnd.DataAccessLayer{
                         
                         //Fill simplified version of entities
                         locations.Add(new GeoLocationEntity() {
-                            Latitude = item.Latitude,
-                            Longitude = item.Longitude
-                        });
+                                                                    Latitude = item.Latitude,
+                                                                    Longitude = item.Longitude
+                                                               });
                     }
                     
                     //Fill assortment entities
                     assortment = _dbEntities.tblAssortments.Select(a =>
                             new AssortmentEntity()
-                            {
-                                EntityID = a.iAssortmentId,
-                                EntityName = a.nvcAssortmentName,
-                                MealDescription = a.nvcDescription
-                            }
-                        ).ToList();
+                                                    {
+                                                        EntityID = a.iAssortmentId,
+                                                        EntityName = a.nvcAssortmentName,
+                                                        MealDescription = a.nvcDescription
+                                                    }).ToList();
 
                     //Fill ingridient entities
                     ingridients = _dbEntities.tblIngridients.Select(i =>
                         new BaseEntity()
-                        {
-                            EntityID = i.iIngridientId,
-                            EntityName = i.nvcDescription
-                        }).ToList();
+                                        {
+                                            EntityID = i.iIngridientId,
+                                            EntityName = i.nvcDescription
+                                        }).ToList();
                 }
             }
             catch (Exception ex){
