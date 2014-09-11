@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace JunkBackEnd.Entities
+﻿namespace JunkBackEnd.Entities
 {
     /// <summary>
     /// Is used for to connect price with name and assortment ID

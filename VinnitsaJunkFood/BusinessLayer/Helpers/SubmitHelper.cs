@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using JunkBackEnd.Entities;
 
 namespace JunkBackEnd.BusinessLayer
 {
     public static class SubmitHelper{
 #region Enums
-        enum cities { Vinnitsa };
+        enum Cities { Vinnitsa };
 #endregion
 
 #region Methods
-       internal static bool isUniqueMeal(string entityName, ref List<AssortmentEntity> list){
-            bool isUnique = true;
-            foreach (var item in list){
-                if (item.EntityName == entityName) {
-                    return false;
-                }
-            }
 
-            return isUnique;
-        }  
+        /// <summary>
+        /// Determines whether [is unique meal] [the specified entity name].
+        /// </summary>
+        /// <param name="entityName">Name of the entity.</param>
+        /// <param name="list">The list.</param>
+        /// <returns></returns>
+       internal static bool IsUniqueMeal(string entityName, ref List<AssortmentEntity> list){
+            return list.All(item => item.EntityName != entityName);
+       }  
       
         /// <summary>
         /// Submits meal that was specified in meal parameter. NOTE: It must be unique meal, use isUnique function before.
@@ -115,10 +114,10 @@ namespace JunkBackEnd.BusinessLayer
             return isSuccessful;
         }
 
-        private static bool isInCityLimits(cities city, OutletEntity outlet){
+        private static bool isInCityLimits(Cities city, OutletEntity outlet){
             bool isValid = false;
             switch (city) {
-                case cities.Vinnitsa:
+                case Cities.Vinnitsa:
                     isValid = (outlet.Latitude > 49.19)
                                 && (outlet.Latitude < 49.29)
                                 && (outlet.Longitude > 28.39)
@@ -154,7 +153,7 @@ namespace JunkBackEnd.BusinessLayer
                 return false;
             }
 
-            if (!isInCityLimits(cities.Vinnitsa, outlet)){
+            if (!isInCityLimits(Cities.Vinnitsa, outlet)){
                 opResult = "Error: The outlet must be in city limits";
                 return false;
             }
@@ -257,6 +256,7 @@ namespace JunkBackEnd.BusinessLayer
             comment.CommentRating += delta;            
             return success;
         }
+
 #endregion    
         
     }

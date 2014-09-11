@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 
 namespace VinnitsaJunkFood.Logger
 {
     public class FileLogger{        
-        private static object lockObject = new object();        
+        private static object _lockObject = new object();        
 
         public FileLogger(){            
             TextWriterTraceListener logListener = new TextWriterTraceListener();
@@ -17,7 +16,7 @@ namespace VinnitsaJunkFood.Logger
         /// </summary>
         /// <param name="message"></param>
         public void WriteLog(string message) {
-            lock (lockObject){
+            lock (_lockObject){
                 string timeStamp = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff");
                 Trace.WriteLine(timeStamp + " - "  + message);                                                
             }

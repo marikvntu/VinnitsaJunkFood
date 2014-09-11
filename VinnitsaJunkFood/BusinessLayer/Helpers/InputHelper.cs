@@ -3,8 +3,6 @@ using JunkBackEnd.Entities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Web;
 
 namespace VinnitsaJunkFood.BusinessLayer{
     
@@ -12,18 +10,16 @@ namespace VinnitsaJunkFood.BusinessLayer{
     /// This class is needed to validate user input
     /// and to convert string data to specific types
     /// </summary>
-    public static class InputHelper{        
+    public static class InputHelper{
         /// <summary>
-        /// Unwraps meal json string, validate and checks uniqueness. If all passed, 
+        /// Unwraps meal json string, validate and checks uniqueness. If all passed,
         /// returns true and outputs AssortmentEntity. If failed returns false, and null.
         /// </summary>
-        /// <param name="mealJson">Stringified json from request</param>
+        /// <param name="meal">output of assortment entity</param>
         /// <param name="assortment">in-memory assortment list</param>
         /// <param name="opMessage">operation error message. Blank if no errors occured.</param>
-        /// <param name="meal">output of assortment entity</param>
         /// <returns></returns>
         public static bool ValidateAndPrepareMealData(AssortmentEntity meal, ref List<AssortmentEntity> assortment, out string opMessage) {
-            bool successful = true;
             opMessage = "";                                              
 
             if (meal == null){
@@ -31,14 +27,14 @@ namespace VinnitsaJunkFood.BusinessLayer{
                 return false;
             }
 
-            bool isUnique = SubmitHelper.isUniqueMeal(meal.EntityName, ref assortment);
+            bool isUnique = SubmitHelper.IsUniqueMeal(meal.EntityName, ref assortment);
             //check if unique name
             if (!isUnique) { 
                 opMessage = "Failed: There is already a meal with name: " + meal.EntityName;
                 return false;
             }
 
-            return successful;
+            return true;
         }
 
 
@@ -59,10 +55,10 @@ namespace VinnitsaJunkFood.BusinessLayer{
         }
 
         /// <summary>
-        /// Used to decode the string from UpdatePriceList request and return List<PriceListEntity>
+        /// Unwraps the price list string.
         /// </summary>
-        /// <param name="priceListParams">string from the request</param>
-        /// <returns>List<PriceListEntity></returns>
+        /// <param name="priceListParams">The price list parameters.</param>
+        /// <returns></returns>
         internal static List<PriceListEntity> UnwrapPriceListString(string priceListParams){
             var priceList = new List<PriceListEntity>();
             //in case all entities cleared

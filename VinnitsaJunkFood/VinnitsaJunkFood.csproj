@@ -110,7 +110,6 @@
     <Compile Include="BusinessLayer\Helpers\InputHelper.cs" />
     <Compile Include="BusinessLayer\Helpers\JsonHelper.cs" />
     <Compile Include="BusinessLayer\SiteCore.cs" />
-    <Compile Include="BusinessLayer\SiteManager.cs" />
     <Compile Include="BusinessLayer\Helpers\SubmitHelper.cs" />
     <Compile Include="DataAccessLayer\IDbReader.cs" />
     <Compile Include="Entities\FeedbackEntity.cs" />

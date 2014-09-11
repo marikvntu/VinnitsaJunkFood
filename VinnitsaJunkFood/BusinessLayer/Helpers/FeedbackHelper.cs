@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Web;
 
-namespace VinnitsaJunkFood.BusinessLayer
+namespace VinnitsaJunkFood.BusinessLayer.Helpers
 {
     public static class FeedbackHelper{
         /// <summary>
@@ -17,7 +13,7 @@ namespace VinnitsaJunkFood.BusinessLayer
         /// <param name="body">Body of mail message</param>
         public static bool SendMailMessage(string from, string to, string subject, string body) {
             bool  success = false;
-            MailMessage mailMessage = new MailMessage  {
+            var mailMessage = new MailMessage  {
                                                             From = new MailAddress(from),
                                                             Subject = subject,
                                                             Body = body,
@@ -27,8 +23,8 @@ namespace VinnitsaJunkFood.BusinessLayer
             mailMessage.To.Add(new MailAddress(to));            
 
             // Instantiate a new instance of SmtpClient
-            SmtpClient mSmtpClient = new SmtpClient("smtp.mail.ru", 2525)   {
-                                                                                Credentials = new NetworkCredential("junkfood.notification@mail.ru", "collider1!"),
+            var mSmtpClient = new SmtpClient("smtp.mail.ru", 2525)   {
+                                                                                Credentials = new NetworkCredential("junkfood.notification@mail.ru", "freedom1!"),
                                                                                 Timeout = 10000
                                                                             };
             
@@ -38,7 +34,6 @@ namespace VinnitsaJunkFood.BusinessLayer
                 success = true;
             }
             catch (SmtpException){}
-            catch{}
             finally{
                 mailMessage.Dispose();
                 mSmtpClient.Dispose();

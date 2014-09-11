@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Data.EntityClient;
-using System.Data.SqlClient;
 using JunkBackEnd.Entities;
 using System.Globalization;
-using JunkBackEnd.DataAccessLayer;
 using VinnitsaJunkFood.DataAccessLayer;
 
 namespace JunkBackEnd.DataAccessLayer{       
